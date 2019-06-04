@@ -16,7 +16,8 @@ struct VideoContext {
   SDL_Renderer *renderer;
 };
 
-enum Resolution { W320X240, W640X480, W800X600, W1024X768, W1600X1200 };
+enum Resolution { W320X240, W640X480, W800X600, W1024X768, W1600X1200,
+                  F320X240, F640X480, F800X600, F1024X768, F1600X1200};
 
 /**
  * Setup the window and video card draw context. Also disable any screensaver.
