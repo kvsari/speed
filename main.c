@@ -9,6 +9,7 @@
 #include "SDL_version.h"
 
 #include "video.h"
+#include "draw.h"
 
 void sdl_version_log() {
   SDL_version c, l;  
@@ -24,21 +25,23 @@ void sdl_version_log() {
 
 int initialize_sdl() {
   if (SDL_Init(0) != 0) {
-    SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Unable to initialize SDL2: %s", SDL_GetError());
+    SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Unable to initialize SDL2: %s\n", SDL_GetError());
     return -1;
   }
   
   if (SDL_InitSubSystem(SDL_INIT_TIMER) != 0) {
-    SDL_LogError(SDL_LOG_CATEGORY_ERROR,
-                 "Unable to initialize SDL2 timing system: %s",
-                 SDL_GetError());
+    SDL_LogError(
+      SDL_LOG_CATEGORY_ERROR,
+      "Unable to initialize SDL2 timing system: %sn",
+      SDL_GetError());
     return -1;
   }
   
   if (SDL_InitSubSystem(SDL_INIT_VIDEO) != 0) {
-    SDL_LogError(SDL_LOG_CATEGORY_VIDEO,
-                 "Failed to initialse SDL2 video system: %s",
-                 SDL_GetError());
+    SDL_LogError(
+      SDL_LOG_CATEGORY_VIDEO,
+      "Failed to initialse SDL2 video system: %s\n",
+      SDL_GetError());
     return -1;
   }
 
@@ -53,6 +56,9 @@ int main(int argc, char **argv) {
   if (initialize_sdl() != 0) { return 1; }
   if (bring_up_video(&v_context, W320X240) != 0) { return 1; }
 
+  display(&v_context);
+  plot_pixel_01(&v_context, 100, 100, 0, 255, 0);
+  
   SDL_Delay(5000);
 
   destroy_video_context(&v_context);

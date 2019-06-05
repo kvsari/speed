@@ -4,16 +4,20 @@
 #ifndef _VIDEO_H_
 #define _VIDEO_H_
 
-#include "SDL_log.h"
 #include "SDL_video.h"
 #include "SDL_render.h"
 
 /**
- * Contains all video handles. To be passed throughout the program as its needed.
+ * Contains all video handles. To be passed throughout the program as it's needed.
  */
 struct VideoContext {
-  SDL_Window   *window;
+  SDL_Texture  *texture;
   SDL_Renderer *renderer;
+  int          pixels_wide;
+  int          pixels_high;
+  int          pixel_bytes;
+  int          pitch_bytes;
+  SDL_Window   *window;
 };
 
 enum Resolution { W320X240, W640X480, W800X600, W1024X768, W1600X1200,
@@ -25,5 +29,7 @@ enum Resolution { W320X240, W640X480, W800X600, W1024X768, W1600X1200,
 int bring_up_video(struct VideoContext *v_context, enum Resolution resolution);
 
 void destroy_video_context(struct VideoContext *v_context);
+
+void display(struct VideoContext *v_context);
 
 #endif

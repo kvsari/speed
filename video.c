@@ -1,9 +1,6 @@
-#include "video.h"
+#include "SDL_log.h"
 
-void destroy_video_context(struct VideoContext *v_context) {
-  SDL_DestroyRenderer(v_context->renderer);
-  SDL_DestroyWindow(v_context->window);
-}
+#include "video.h"
 
 int bring_up_video(struct VideoContext *v_context, enum Resolution resolution) {
   int w, h, f;
@@ -22,14 +19,69 @@ int bring_up_video(struct VideoContext *v_context, enum Resolution resolution) {
   default : SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Invalid video resolution given.");
     return 1;
   }
-  
-  SDL_DisableScreenSaver();
-  
-  if(SDL_CreateWindowAndRenderer(w, h, f, &v_context->window, &v_context->renderer) != 0) {
-    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create window and renderer: %s",
-                 SDL_GetError());
+
+  v_context->window = SDL_CreateWindow(
+    "SPEED",
+    SDL_WINDOWPOS_UNDEFINED,
+    SDL_WINDOWPOS_UNDEFINED,
+    w,
+    h,
+    f);
+
+  if (v_context->window == NULL) {
+    SDL_LogError(
+      SDL_LOG_CATEGORY_APPLICATION,
+      "Couldn't create window: %s\n",
+      SDL_GetError());
     return -1;
   }
 
+  v_context->renderer = SDL_CreateRenderer(
+    v_context->window,
+    -1,
+    SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+  if (v_context->renderer == NULL) {
+    SDL_LogError(
+      SDL_LOG_CATEGORY_APPLICATION,
+      "Couldn't create renderer: %s\n",
+      SDL_GetError());
+    return -1;
+  }
+  
+  v_context->texture = SDL_CreateTexture(
+    v_context->renderer,
+    SDL_PIXELFORMAT_RGBA8888, // 4 bytes per pixel fitting into a Uint32.
+    SDL_TEXTUREACCESS_STREAMING,
+    w,
+    h);
+
+  if (v_context->texture == NULL) {
+    SDL_LogError(
+      SDL_LOG_CATEGORY_APPLICATION,
+      "Couldn't create texture: %s\n",
+      SDL_GetError());
+    return -1;
+  }
+
+  v_context->pixels_wide = w;
+  v_context->pixels_high = h;
+  v_context->pixel_bytes = 4;  // also the span.
+  v_context->pitch_bytes = w * 4; // How many bytes of memory per line
+
+  SDL_DisableScreenSaver();
+  
   return 0;
+}
+
+void destroy_video_context(struct VideoContext *v_context) {
+  SDL_DestroyTexture(v_context->texture);
+  SDL_DestroyRenderer(v_context->renderer);
+  SDL_DestroyWindow(v_context->window);
+}
+
+void display(struct VideoContext *v_context) {
+  SDL_SetRenderDrawColor(v_context->renderer, 255, 0, 0, 255);
+  SDL_RenderClear(v_context->renderer);
+  SDL_RenderPresent(v_context->renderer);
 }
