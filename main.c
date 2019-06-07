@@ -48,18 +48,41 @@ int initialize_sdl() {
   return 0;
 }
 
+/*
+// Various printouts for debug purposes. Kept here to not clutter main.
+void printouts() {
+  int rgba8888_size = sizeof(union RGBA8888);
+  printf("RGBA8888 size: %d\n", rgba8888_size);
+
+  // Holy crap! I need to refresh my memory on how pointers work! Been too long.
+  unsigned int numbers[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+  unsigned int *n_ptr = numbers;
+  printf("ADDRESS => numbers[0]: %x, n_ptr: %x, &n_ptr: %x\n", &numbers[0], n_ptr, &n_ptr);
+  printf("VALUE   => numbers[0]: %d, *n_ptr: %d\n", numbers[0], *n_ptr);
+  n_ptr++;
+  printf("ADDRESS => numbers[1]: %x, n_ptr: %x, &n_ptr: %x\n", &numbers[1], n_ptr, &n_ptr);
+  printf("VALUE   => numbers[1]: %d, *n_ptr: %d\n", numbers[1], *n_ptr);
+  n_ptr += 1;
+  printf("ADDRESS => numbers[1]: %x, n_ptr: %x, &n_ptr: %x\n", &numbers[1], n_ptr, &n_ptr);
+  printf("VALUE   => numbers[1]: %d, *n_ptr: %d\n", numbers[1], *n_ptr);
+  n_ptr += 4;
+  printf("ADDRESS => numbers[6]: %x, n_ptr: %x, &n_ptr: %x\n", &numbers[6], n_ptr, &n_ptr);
+  printf("VALUE   => numbers[6]: %d, *n_ptr: %d\n", numbers[6], *n_ptr);  
+}
+*/
+
 int main(int argc, char **argv) {
   sdl_version_log();
 
-  struct VideoContext v_context;
+  struct VideoContext v_context = create_empty_video_context();
   
   if (initialize_sdl() != 0) { return 1; }
   if (bring_up_video(&v_context, W320X240) != 0) { return 1; }
 
-  display(&v_context);
-  plot_pixel_01(&v_context, 100, 100, 0, 255, 0);
-  
+  display_02(&v_context);
   SDL_Delay(5000);
+
+  //printouts();
 
   destroy_video_context(&v_context);
   SDL_Quit();

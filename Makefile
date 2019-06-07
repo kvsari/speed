@@ -19,7 +19,7 @@ help:
 main.o: main.c video.h draw.h
 	$(CC) $(COMPILE) main.c $(SDL2_FLAGS)
 
-video.o: video.c video.h
+video.o: video.c video.h draw.h
 	$(CC) $(COMPILE) video.c $(SDL2_FLAGS)
 
 draw.o: draw.c draw.h video.h

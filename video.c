@@ -1,6 +1,25 @@
+#include <errno.h>
+#include <string.h>
+#include <stdlib.h>
+
 #include "SDL_log.h"
 
 #include "video.h"
+#include "draw.h"
+
+struct VideoContext create_empty_video_context() {
+  struct VideoContext v_context;
+
+  v_context.window = NULL;
+  v_context.renderer = NULL;
+  v_context.texture = NULL;
+  v_context.pixels = NULL;
+  v_context.pixels_wide = 0;
+  v_context.pixels_high = 0;
+  v_context.pitch_bytes = 0;
+
+  return v_context;
+}
 
 int bring_up_video(struct VideoContext *v_context, enum Resolution resolution) {
   int w, h, f;
@@ -64,10 +83,21 @@ int bring_up_video(struct VideoContext *v_context, enum Resolution resolution) {
     return -1;
   }
 
-  v_context->pixels_wide = w;
+  v_context->pixels = malloc(w * h * sizeof(Uint32));
+
+  if (v_context->pixels == NULL) {
+    int err = errno;
+    SDL_LogError(
+      SDL_LOG_CATEGORY_APPLICATION,
+      "Couldn't create draw software pixel surface; errno: %d, perror: %s\n",
+      err,
+      strerror(err));
+    return -1;
+  }
+
+  v_context->pixels_wide = w; // Also known as the span.
   v_context->pixels_high = h;
-  v_context->pixel_bytes = 4;  // also the span.
-  v_context->pitch_bytes = w * 4; // How many bytes of memory per line
+  v_context->pitch_bytes = w * sizeof(Uint32); // How many bytes of memory per line.
 
   SDL_DisableScreenSaver();
   
@@ -75,13 +105,30 @@ int bring_up_video(struct VideoContext *v_context, enum Resolution resolution) {
 }
 
 void destroy_video_context(struct VideoContext *v_context) {
+  free(v_context->pixels);
   SDL_DestroyTexture(v_context->texture);
   SDL_DestroyRenderer(v_context->renderer);
   SDL_DestroyWindow(v_context->window);
 }
 
-void display(struct VideoContext *v_context) {
+void display_01(struct VideoContext *v_context) {
   SDL_SetRenderDrawColor(v_context->renderer, 255, 0, 0, 255);
   SDL_RenderClear(v_context->renderer);
+  SDL_RenderPresent(v_context->renderer);
+}
+
+void display_02(struct VideoContext *v_context) {
+  union RGBA8888 colour;
+  colour.rgba[0] = 255;
+  colour.rgba[1] = 0;
+  colour.rgba[2] = 0;
+  colour.rgba[3] = 255;
+  
+  plot_pixel(v_context->pixels, v_context->pixels_wide, 100, 100, colour);
+
+  SDL_UpdateTexture(v_context->texture, NULL, v_context->pixels, v_context->pitch_bytes);
+
+  SDL_RenderClear(v_context->renderer);
+  SDL_RenderCopy(v_context->renderer, v_context->texture, NULL, NULL);
   SDL_RenderPresent(v_context->renderer);
 }

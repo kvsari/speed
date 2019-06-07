@@ -10,16 +10,28 @@
 
 #include "video.h"
 
-// Bunch of debug/test functions first...
+/**
+ * Represent a 32bit colour value with alpha and retain easy per field access. To be used
+ * with `SDL_Surface` surfaces.
+ *
+ * NOTE: Set the alpha (rgba[3]) to 255 for full opaqueness. At 0 it is totally tansparent
+ *       and the pixel won't be seen.
+ */
+union RGBA8888 {
+  Uint8  rgba[4];
+  Uint32 val;
+};
 
-void plot_pixel_01(
-  struct VideoContext *v_context,
-  Uint32 x,
-  Uint32 y,
-  Uint8 r,
-  Uint8 g,
-  Uint8 b);
+/* Bunch of debug/test functions first... */
 
-
+/**
+ * Pixel size is implied by the pointer type. Does no bounds checking!
+ */
+void plot_pixel(
+  Uint32 *pixels,
+  int span,
+  int plot_x,
+  int plot_y,
+  union RGBA8888 colour);
 
 # endif
