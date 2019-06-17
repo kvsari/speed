@@ -12,7 +12,6 @@
  * Contains all video handles. To be passed throughout the program as it's needed.
  */
 struct VideoContext {
-  Uint32       *pixels;
   SDL_Texture  *texture;
   SDL_Renderer *renderer;
   int          pixels_wide;
@@ -33,12 +32,15 @@ struct VideoContext create_empty_video_context();
 /**
  * Setup the window and video card draw context. Also disable any screensaver.
  */
-int bring_up_video(struct VideoContext *v_context, enum Resolution resolution);
+int bring_up_video(struct VideoContext *v_context, const enum Resolution resolution);
 
 void destroy_video_context(struct VideoContext *v_context);
 
-void display_01(struct VideoContext *v_context);
-
-void display_02(struct VideoContext *v_context);
+/**
+ * Transfer whatever is pointed at by `pixels` into the video device. The block of memory
+ * `pixels` must be of the same width and height as the resolution that was set for the
+ * `VideoContext`. If it's not the exact size undefined behaviour will happen.
+ */
+void display(struct VideoContext *v_context, Uint32 *pixels);
 
 #endif

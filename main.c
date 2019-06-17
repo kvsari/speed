@@ -74,12 +74,25 @@ void printouts() {
 int main(int argc, char **argv) {
   sdl_version_log();
 
+  // Setup video
   struct VideoContext v_context = create_empty_video_context();
-  
   if (initialize_sdl() != 0) { return 1; }
   if (bring_up_video(&v_context, W320X240) != 0) { return 1; }
 
-  display_02(&v_context);
+  // Setup draw buffer to same size of video surface.
+  struct DrawBuffer draw_buf = create_empty_draw_buffer();
+  size_t x = v_context.pixels_wide;
+  size_t y = v_context.pixels_high;
+  if (initialize_draw_buffer(&draw_buf, x, y) != 0) { return 1; }
+
+  union RGBA8888 colour;
+  colour.rgba[0] = 255;
+  colour.rgba[1] = 0;
+  colour.rgba[2] = 0;
+  colour.rgba[3] = 255;
+  plot_pixel(&draw_buf, 100, 100, colour);    
+
+  display(&v_context, draw_buf.pixels);
   SDL_Delay(5000);
 
   //printouts();
