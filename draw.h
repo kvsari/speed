@@ -33,7 +33,7 @@ union RGBA8888 {
  */
 struct DrawBuffer {
   Uint32 *pixels;
-  int bytes;
+  int pixel_count;
   int pixel_span;
   int pixel_rows;
 };
@@ -49,8 +49,6 @@ struct DrawBuffer create_empty_draw_buffer();
  */
 int initialize_draw_buffer(struct DrawBuffer *draw_buffer, const size_t x, const size_t y);
 
-/* Bunch of debug/test functions first... */
-
 /**
  * Pixel memory size is implied by the pointer type. Does no bounds checking!
  */
@@ -59,5 +57,14 @@ void plot_pixel(
   const int plot_x,
   const int plot_y,
   const union RGBA8888 colour);
+
+///////////////////////////////////
+//   TESTING GRAPHICAL FUNCTIONS //
+///////////////////////////////////
+
+/**
+ * Draw one frame of snow.
+ */
+void snow(struct DrawBuffer *draw_buffer, const union RGBA8888 snow_colour);
 
 # endif

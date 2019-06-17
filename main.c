@@ -1,6 +1,7 @@
 /**
  * Speed
  */
+#include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -73,6 +74,7 @@ void printouts() {
 
 int main(int argc, char **argv) {
   sdl_version_log();
+  srand48(time(NULL));
 
   // Setup video
   struct VideoContext v_context = create_empty_video_context();
@@ -90,11 +92,24 @@ int main(int argc, char **argv) {
   colour.rgba[1] = 0;
   colour.rgba[2] = 0;
   colour.rgba[3] = 255;
-  plot_pixel(&draw_buf, 100, 100, colour);    
 
-  display(&v_context, draw_buf.pixels);
-  SDL_Delay(5000);
+  //plot_pixel(&draw_buf, 100, 100, colour);    
 
+  /*
+  for (int i = 0; i < 180; ++i) {
+    int s = lrand48() % draw_buf.pixel_span;
+    int r = lrand48() % draw_buf.pixel_rows;
+
+    plot_pixel(&draw_buf, s, r, colour);
+    display(&v_context, draw_buf.pixels);
+  }
+  */
+
+  for (int i = 0; i < 180; ++i) {
+    snow(&draw_buf, colour);
+    display(&v_context, draw_buf.pixels);
+  }
+  
   //printouts();
 
   destroy_video_context(&v_context);

@@ -5,7 +5,6 @@
 #include "SDL_log.h"
 
 #include "video.h"
-#include "draw.h"
 
 struct VideoContext create_empty_video_context() {
   struct VideoContext v_context;

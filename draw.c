@@ -8,10 +8,12 @@
 
 #include "draw.h"
 
+//const union RGBA8888 colour_black = { .rgba = { 0, 0, 0, 0 } };
+
 struct DrawBuffer create_empty_draw_buffer() {
   struct DrawBuffer draw_buffer;
   draw_buffer.pixels = NULL;
-  draw_buffer.bytes = 0;
+  draw_buffer.pixel_count = 0;
   draw_buffer.pixel_span = 0;
   draw_buffer.pixel_rows = 0;
 
@@ -31,7 +33,7 @@ int initialize_draw_buffer(struct DrawBuffer *draw_buffer, const size_t x, const
     return -1;
   }
 
-  draw_buffer->bytes = x * y * sizeof(Uint32);
+  draw_buffer->pixel_count = x * y;
   draw_buffer->pixel_span = x;
   draw_buffer->pixel_rows = y;
 
@@ -41,7 +43,7 @@ int initialize_draw_buffer(struct DrawBuffer *draw_buffer, const size_t x, const
 void deinitialize_draw_buffer(struct DrawBuffer *draw_buffer) {
   free(draw_buffer->pixels);
   draw_buffer->pixels = NULL;
-  draw_buffer->bytes = 0;
+  draw_buffer->pixel_count = 0;
   draw_buffer->pixel_span = 0;
   draw_buffer->pixel_rows = 0;
 }
@@ -55,4 +57,15 @@ void plot_pixel(
   Uint32 *pixels = draw_buffer->pixels;
   pixels += plot_y * draw_buffer->pixel_span + plot_x;
   *pixels = colour.val;
+}
+
+void snow(struct DrawBuffer *draw_buffer, const union RGBA8888 snow_colour) {
+  Uint32 *pixels = draw_buffer->pixels;
+  memset(pixels, 0, draw_buffer->pixel_count * sizeof(Uint32));
+  for (int i = 0; i < draw_buffer->pixel_count; i++) {
+    if (lrand48() % 2 == 0) {
+      *pixels = snow_colour.val;
+    }
+    pixels++;
+  }
 }
