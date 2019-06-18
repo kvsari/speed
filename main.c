@@ -74,14 +74,17 @@ void printouts() {
 
 int main(int argc, char **argv) {
   sdl_version_log();
-  srand48(time(NULL));
+  srand(time(NULL));
 
   // Setup video
   struct VideoContext v_context = create_empty_video_context();
   if (initialize_sdl() != 0) { return 1; }
-  if (bring_up_video(&v_context, W320X240) != 0) { return 1; }
+  //if (bring_up_video(&v_context, W320X240) != 0) { return 1; }
+  //if (bring_up_video(&v_context, F640X480) != 0) { return 1; }
+  //if (bring_up_video(&v_context, F800X600) != 0) { return 1; }
+  if (bring_up_video(&v_context, F1024X768) != 0) { return 1; }
 
-  // Setup draw buffer to same size of video surface.
+  // Setup draw buffer to same size of the video surface.
   struct DrawBuffer draw_buf = create_empty_draw_buffer();
   size_t x = v_context.pixels_wide;
   size_t y = v_context.pixels_high;
@@ -92,8 +95,6 @@ int main(int argc, char **argv) {
   colour.rgba[1] = 0;
   colour.rgba[2] = 0;
   colour.rgba[3] = 255;
-
-  //plot_pixel(&draw_buf, 100, 100, colour);    
 
   /*
   for (int i = 0; i < 180; ++i) {
@@ -110,9 +111,10 @@ int main(int argc, char **argv) {
     display(&v_context, draw_buf.pixels);
   }
   
-  //printouts();
+  
 
   destroy_video_context(&v_context);
+  deinitialize_draw_buffer(&draw_buf);
   SDL_Quit();
   return 0;
 }

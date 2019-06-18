@@ -10,7 +10,7 @@ SDL2_LIBS=$(shell sdl2-config --libs)
 OBJECTS=main.o video.o draw.o
 
 speed:$(OBJECTS)
-	$(CC) -o speed $(OBJECTS) $(SDL2_LIBS)
+	$(CC) -o speed $(OBJECTS) $(SDL2_LIBS) -lm
 
 help:
 	@echo "\"make\" Will make everything"

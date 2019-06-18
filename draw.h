@@ -11,6 +11,10 @@
 
 #include "video.h"
 
+//--------------------------------------------
+// Types
+//--------------------------------------------
+
 /**
  * Represent a 32bit colour value with alpha and retain easy per field access. To be used
  * for writing to raw system memory in the same format as the `SDL_Texture` assigned to the
@@ -28,6 +32,16 @@ union RGBA8888 {
 };
 
 /**
+ * A 2D line for drawing onto a `DrawBuffer`.
+ */
+struct Line {
+  int x0;
+  int y0;
+  int x1;
+  int y1;
+};
+
+/**
  * Raw 32bit memory block used for drawing a frame. The size of each pixel equals an
  * `RGBA8888`. This memory is then slurped by the video system to be displayed.
  */
@@ -37,6 +51,10 @@ struct DrawBuffer {
   int pixel_span;
   int pixel_rows;
 };
+
+//--------------------------------------------
+// State Management
+//--------------------------------------------
 
 /**
  * Create a `DrawBuffer` set to NULL.
@@ -50,12 +68,36 @@ struct DrawBuffer create_empty_draw_buffer();
 int initialize_draw_buffer(struct DrawBuffer *draw_buffer, const size_t x, const size_t y);
 
 /**
+ * As the name says.
+ */
+void deinitialize_draw_buffer(struct DrawBuffer *draw_buffer);
+
+//--------------------------------------------
+// Plotting
+//--------------------------------------------
+
+/**
  * Pixel memory size is implied by the pointer type. Does no bounds checking!
  */
 void plot_pixel(
   struct DrawBuffer *draw_buffer,
   const int plot_x,
   const int plot_y,
+  const union RGBA8888 colour);
+
+/**
+ * Clip a line producing a new line which falls within the supplied `DrawBuffer`. The
+ * supplied line is modified. 0 is returned if the clipped line is within the `DrawBuffer`.
+ * -1 is returned if the line is completely out of bounds.
+ */
+int clip_line(const struct DrawBuffer *draw_buffer, struct Line *line);
+  
+/**
+ * Use a modified Bresenhams line drawing algorithm to plot a line. Does no bounds checks!
+ */
+void plot_line(
+  struct DrawBuffer *draw_buffer,
+  const struct Line *line,
   const union RGBA8888 colour);
 
 ///////////////////////////////////
