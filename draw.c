@@ -9,8 +9,6 @@
 
 #include "draw.h"
 
-//const union RGBA8888 colour_black = { .rgba = { 0, 0, 0, 0 } };
-
 struct DrawBuffer create_empty_draw_buffer() {
   struct DrawBuffer draw_buffer;
   draw_buffer.pixels = NULL;
@@ -53,24 +51,42 @@ void plot_pixel(
   struct DrawBuffer *draw_buffer,
   const int plot_x,
   const int plot_y,
-  const union RGBA8888 colour)
+  const Uint32 colour)
 {
   Uint32 *pixels = draw_buffer->pixels;
   pixels += plot_y * draw_buffer->pixel_span + plot_x;
-  *pixels = colour.val;
+  *pixels = colour;
 }
 
-int clip_line(const struct DrawBuffer *draw_buffer, struct Line *line) {
+int clip_line(
+  const struct DrawBuffer *draw_buffer,
+  const struct Rectangle *clip_rect,
+  struct Line *line)
+{
   int x0 = line->x0;
   int y0 = line->y0;
   int x1 = line->x1;
   int y1 = line->y1;
+
+  int cx0, cy0, cx1, cy1; // Clip
+
+  if(clip_rect == NULL) {
+    cx0 = cy0 = 0;
+    cx1 = draw_buffer->pixel_span;
+    cy1 = draw_buffer->pixel_rows;
+  } else {
+    cx0 = clip_rect->x;
+    cy0 = clip_rect->y;
+    cx1 = clip_rect->x + clip_rect->w;
+    cy1 = clip_rect->y + clip_rect->h;
+  }
   
   // First, test to see if line is completely outside bounds.
-  if(((x0 <= 0) && (x1 <= 0)) ||
-     ((x0 >= draw_buffer->pixel_span) && (x1 >= draw_buffer->pixel_span)) ||
-     ((y0 <= 0) && (y1 <= 0)) ||
-     ((y0 >= draw_buffer->pixel_rows) && (y1 >= draw_buffer->pixel_rows))) {
+  if(((x0 <= cx0) && (x1 <= cx0)) ||
+     ((x0 >= cx1) && (x1 >= cx1)) ||
+     ((y0 <= cy0) && (y1 <= cy0)) ||
+     ((y0 >= cy1) && (y1 >= cy1)))
+  {
     return -1;
   }
    
@@ -80,11 +96,12 @@ int clip_line(const struct DrawBuffer *draw_buffer, struct Line *line) {
   int dy0 = -(y1 - y0);
   int dy1 = (y1 - y0);
   
-  int qx0 = x0;
-  int qx1 = draw_buffer->pixel_span - x0;
-  int qy0 = y0;
-  int qy1 = draw_buffer->pixel_rows - y0;
-  
+  int qx0 = x0 - cx0;
+  int qx1 = cx1 - x0;
+  int qy0 = y0 - cy0;
+  int qy1 = cy1 - y0;
+
+  /*
   // Test to see if line is outside the bounding box, if so we just leave
   // This test may be unecessary...
   if(((dx0 == 0) && (qx0 < 0)) ||
@@ -93,11 +110,12 @@ int clip_line(const struct DrawBuffer *draw_buffer, struct Line *line) {
      ((dy1 == 0) && (qy1 < 0))) {
     return -1;
   }
+  */
 
   // Commence line chopping.
   float t0 = 0;
   float t1 = 1;
-  float  rx0, rx1, ry0, ry1;
+  float rx0, rx1, ry0, ry1;
 
   // Left edge check
   if(dx0 != 0) {
@@ -150,9 +168,9 @@ int clip_line(const struct DrawBuffer *draw_buffer, struct Line *line) {
 void plot_line(
   struct DrawBuffer *draw_buffer,
   const struct Line *line,
-  const union RGBA8888 colour)
+  const Uint32 colour)
 {
-  Uint32 *pixels = draw_buffer->pixels;
+  Uint32 *pixels = draw_buffer->pixels + line->y0 * draw_buffer->pixel_span + line->x0;
   int dx = abs(line->x1 - line->x0);
   int dy = abs(line->y1 - line->y0);
   int stepx0, stepx1, stepy0, stepy1;
@@ -189,7 +207,7 @@ void plot_line(
   }
   
   for(int current_pixel = 0; current_pixel <= line_pixels; ++current_pixel) {
-    *pixels = colour.val;
+    *pixels = colour;
     numerator += numerator_add;
     if(numerator >= denominator) {
       numerator -= denominator;
@@ -201,16 +219,43 @@ void plot_line(
   }
 }
 
+void plot_rectangle(
+  struct DrawBuffer *draw_buffer,
+  const struct Rectangle *rectangle,
+  const Uint32 colour)
+{
+  Uint32 *pixels =  
+    draw_buffer->pixels + rectangle->y * draw_buffer->pixel_span + rectangle->x;
+  Uint32 *top_bar = pixels;
+
+  // Draw top bar
+  for(int i = 0; i < rectangle->w; ++i, ++pixels) {
+    *pixels = colour;
+  }
+
+  // Draw left and right bars
+  pixels = top_bar + draw_buffer->pixel_span;
+  Uint32 *right = pixels + rectangle->w;
+  for(int i = 0; i < rectangle->h - 1; ++i) {
+    *pixels = *right = colour;
+    pixels += draw_buffer->pixel_span;
+    right += draw_buffer->pixel_span;
+  }
+
+  // Draw bottom bar with memcpy to top bar.
+  memcpy(pixels, top_bar, rectangle->w * sizeof(Uint32));
+}
+
 ///////////////////////////////////
 //   TESTING GRAPHICAL FUNCTIONS //
 ///////////////////////////////////
 
-void snow(struct DrawBuffer *draw_buffer, const union RGBA8888 snow_colour) {
+void snow(struct DrawBuffer *draw_buffer, const Uint32 snow_colour) {
   Uint32 *pixels = draw_buffer->pixels;
   memset(pixels, 0, draw_buffer->pixel_count * sizeof(Uint32));
   for (int i = 0; i < draw_buffer->pixel_count; i++) {
     if (rand() % 2 == 0) {
-      *pixels = snow_colour.val;
+      *pixels = snow_colour;
     }
     pixels++;
   }

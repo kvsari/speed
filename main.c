@@ -79,10 +79,10 @@ int main(int argc, char **argv) {
   // Setup video
   struct VideoContext v_context = create_empty_video_context();
   if (initialize_sdl() != 0) { return 1; }
-  //if (bring_up_video(&v_context, W320X240) != 0) { return 1; }
+  if (bring_up_video(&v_context, W320X240) != 0) { return 1; }
   //if (bring_up_video(&v_context, F640X480) != 0) { return 1; }
   //if (bring_up_video(&v_context, F800X600) != 0) { return 1; }
-  if (bring_up_video(&v_context, F1024X768) != 0) { return 1; }
+  //if (bring_up_video(&v_context, F1024X768) != 0) { return 1; }
 
   // Setup draw buffer to same size of the video surface.
   struct DrawBuffer draw_buf = create_empty_draw_buffer();
@@ -90,28 +90,96 @@ int main(int argc, char **argv) {
   size_t y = v_context.pixels_high;
   if (initialize_draw_buffer(&draw_buf, x, y) != 0) { return 1; }
 
-  union RGBA8888 colour;
-  colour.rgba[0] = 255;
-  colour.rgba[1] = 0;
-  colour.rgba[2] = 0;
-  colour.rgba[3] = 255;
+  union ABGR8888 c_red;
+  c_red.abgr[0] = 255;
+  c_red.abgr[1] = 0;
+  c_red.abgr[2] = 0;
+  c_red.abgr[3] = 255;
+
+  union ABGR8888 c_green;
+  c_green.abgr[0] = 255;
+  c_green.abgr[1] = 0;
+  c_green.abgr[2] = 255;
+  c_green.abgr[3] = 0;
+
+  union ABGR8888 c_blue;
+  c_blue.abgr[0] = 255;
+  c_blue.abgr[1] = 255;
+  c_blue.abgr[2] = 0;
+  c_blue.abgr[3] = 0;
 
   /*
-  for (int i = 0; i < 180; ++i) {
-    int s = lrand48() % draw_buf.pixel_span;
-    int r = lrand48() % draw_buf.pixel_rows;
-
-    plot_pixel(&draw_buf, s, r, colour);
-    display(&v_context, draw_buf.pixels);
-  }
-  */
-
   for (int i = 0; i < 180; ++i) {
     snow(&draw_buf, colour);
     display(&v_context, draw_buf.pixels);
   }
+  */
+
+  /*
+  struct Line line;
+  line.x0 = 30;
+  line.y0 = 30;
+  line.x1 = 20;
+  line.y1 = 20;
+  plot_line(&draw_buf, &line, c_red);
+  display(&v_context, draw_buf.pixels);
+  SDL_Delay(5000);
+  */
+
+  /*
+  struct Rectangle rectangle;
+  rectangle.x = 50;
+  rectangle.y = 50;
+  rectangle.w = 100;
+  rectangle.h = 100;
+  plot_rectangle(&draw_buf, &rectangle, c_blue.val);
+  display(&v_context, draw_buf.pixels);
+  SDL_Delay(5000);
+  */
+
+  struct Line line;
+  struct Rectangle rectangle;
+  rectangle.x = 80;
+  rectangle.y = 50;
+  rectangle.w = 150;
+  rectangle.h = 150;
+
+  for (int i = 0; i < 300; ++i) {
+    line.x0 = rand() % draw_buf.pixel_span;
+    line.y0 = rand() % draw_buf.pixel_rows;
+    line.x1 = rand() % draw_buf.pixel_span;
+    line.y1 = rand() % draw_buf.pixel_rows;
+
+    memset(draw_buf.pixels, 0, draw_buf.pixel_count * sizeof(Uint32));
+    plot_line(&draw_buf, &line, c_red.val);
+    plot_rectangle(&draw_buf, &rectangle, c_blue.val);
+    if (clip_line(&draw_buf, &rectangle, &line) == 0) {
+      plot_line(&draw_buf, &line, c_green.val);
+    }
+    display(&v_context, draw_buf.pixels);
+  }
+
+  /*
+  struct Line line;
+  struct Rectangle rectangle;
+  rectangle.x = 80;
+  rectangle.y = 50;
+  rectangle.w = 150;
+  rectangle.h = 150;
+
+  line.x0 = 10;
+  line.y0 = 10;
+  line.x1 = 200;
+  line.y1 = 200;
   
-  
+  plot_line(&draw_buf, &line, c_red.val);
+  plot_rectangle(&draw_buf, &rectangle, c_blue.val);
+  if (clip_line(&draw_buf, &rectangle, &line) == 0) {
+    plot_line(&draw_buf, &line, c_green.val);
+  }
+  display(&v_context, draw_buf.pixels);
+  SDL_Delay(5000);
+  */
 
   destroy_video_context(&v_context);
   deinitialize_draw_buffer(&draw_buf);
