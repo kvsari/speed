@@ -138,4 +138,14 @@ void plot_rectangle(
  */
 void snow(struct DrawBuffer *draw_buffer, const Uint32 snow_colour);
 
+/**
+ * Simple plasma using expensive sine functions.
+ */
+void plasma_01(struct DrawBuffer *draw_buffer);
+
+/**
+ * Same as above but use an increment to make it move.
+ */
+void plasma_02(struct DrawBuffer *draw_buffer, int inc);
+
 # endif

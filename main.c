@@ -137,6 +137,7 @@ int main(int argc, char **argv) {
   SDL_Delay(5000);
   */
 
+  /*
   struct Line line;
   struct Rectangle rectangle;
   rectangle.x = 80;
@@ -158,6 +159,7 @@ int main(int argc, char **argv) {
     }
     display(&v_context, draw_buf.pixels);
   }
+  */
 
   /*
   struct Line line;
@@ -180,6 +182,17 @@ int main(int argc, char **argv) {
   display(&v_context, draw_buf.pixels);
   SDL_Delay(5000);
   */
+
+  /*
+  plasma_01(&draw_buf);
+  display(&v_context, draw_buf.pixels);
+  SDL_Delay(5000);
+  */
+
+  for (int i = 0; i < 300; ++i) {
+    plasma_02(&draw_buf, i);
+    display(&v_context, draw_buf.pixels);
+  }
 
   destroy_video_context(&v_context);
   deinitialize_draw_buffer(&draw_buf);

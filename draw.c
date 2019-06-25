@@ -260,3 +260,58 @@ void snow(struct DrawBuffer *draw_buffer, const Uint32 snow_colour) {
     pixels++;
   }
 }
+
+void plasma_01(struct DrawBuffer *draw_buffer) {
+  Uint32 *pixels = draw_buffer->pixels;
+  union ABGR8888 colour;
+  colour.abgr[0] = 255;
+  colour.abgr[1] = 0;
+  colour.abgr[2] = 0;
+  colour.abgr[3] = 0;
+  for(int y = 0; y < draw_buffer->pixel_rows; ++y) {
+    for (int x = 0; x < draw_buffer->pixel_span; ++x) {
+      float grad = (128.0 + (128.0 * sin(x / 8.0)) + 128.0 + (128.0 * sin(y / 8.0))) / 2;
+      colour.abgr[3] = (Uint8)trunc(grad);
+      *pixels = colour.val;
+      pixels++;
+    }
+  }
+}
+
+float dist(float a, float b, float c, float d) {
+  return sqrt((a - c) * (a - c) + (b - d) * (b - d));
+}
+
+void plasma_02(struct DrawBuffer *draw_buffer, int inc) {
+  int inc1 = inc % 100;
+  int inc2 = inc % 200;
+  int diff = inc2 - inc1;
+  
+  if(diff == 100) {
+    inc = 100 - inc1;
+  } else {
+    inc = inc1;
+  }
+
+  inc++;
+  
+  Uint32 *pixels = draw_buffer->pixels;
+  union ABGR8888 colour;
+  colour.abgr[0] = 255;
+  colour.abgr[1] = 0;
+  colour.abgr[2] = 0;
+  colour.abgr[3] = 0;
+  for(int y = 0; y < draw_buffer->pixel_rows; ++y) {
+    for (int x = 0; x < draw_buffer->pixel_span; ++x) {
+      //float x_grad = 128.0 + (128.0 * sin(x / 8.0));
+      //float y_grad = 128.0 + (128.0 * sin(y / 8.0));
+      float x_grad = 128.0 + 128.0 * sin(dist(x + inc, y, 128.0, 128.0) / 8.0);
+      float y_grad = 128.0 + 128.0 * sin(dist(x, y + inc, 128.0, 128.0) / 8.0);
+      //printf("X Gradient: %f, Y Gradient: %f\n", x_grad, y_grad);
+      float grad = (x_grad + y_grad) / 2;
+      colour.abgr[2] = (Uint8)trunc(grad);
+      *pixels = colour.val;
+      pixels++;
+    }
+  }
+}
