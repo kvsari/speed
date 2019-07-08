@@ -8,11 +8,15 @@
 #include "SDL.h"
 #include "SDL_log.h"
 #include "SDL_version.h"
+#include "SDL_events.h"
 
 #include "video.h"
 #include "draw.h"
+#include "input.h"
 
-void sdl_version_log() {
+void
+sdl_version_log()
+{
   SDL_version c, l;  
 
   SDL_VERSION(&c);
@@ -37,7 +41,8 @@ int initialize_sdl() {
       SDL_GetError());
     return -1;
   }
-  
+
+  // Event subsystem is implicitly initialized along with the video subsystem.
   if (SDL_InitSubSystem(SDL_INIT_VIDEO) != 0) {
     SDL_LogError(
       SDL_LOG_CATEGORY_VIDEO,
@@ -72,9 +77,17 @@ void printouts() {
 }
 */
 
-int main(int argc, char **argv) {
+int
+main(int argc, char **argv)
+{
   sdl_version_log();
   srand(time(NULL));
+
+  /////////////////////////////////////////////
+  //
+  // INITIALIZATION
+  //
+  /////////////////////////////////////////////
 
   // Setup video
   struct VideoContext v_context = create_empty_video_context();
@@ -89,7 +102,7 @@ int main(int argc, char **argv) {
   size_t x = v_context.pixels_wide;
   size_t y = v_context.pixels_high;
   if (initialize_draw_buffer(&draw_buf, x, y) != 0) { return 1; }
-
+  
   union ABGR8888 c_red;
   c_red.abgr[0] = 255;
   c_red.abgr[1] = 0;
@@ -189,8 +202,50 @@ int main(int argc, char **argv) {
   SDL_Delay(5000);
   */
 
+  /*
   for (int i = 0; i < 300; ++i) {
     plasma_02(&draw_buf, i);
+    display(&v_context, draw_buf.pixels);
+  }
+  */
+
+  // Test plasma
+  int i = 0;
+
+  struct KeyboardMappings k_mappings = default_keyboard_mappings();
+  Uint32 input_state = 0;
+
+  ////////////////////////////////////////////
+  //
+  //  GAME LOOP
+  //
+  ////////////////////////////////////////////
+
+  int game_on = 1;
+  while(game_on) {
+
+    // Get player events
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+      switch (event.type) {
+      case SDL_QUIT : game_on = 0; break;
+      case SDL_KEYDOWN :
+        keypress(&input_state, &k_mappings, event.key.keysym.scancode);
+        break;
+      case SDL_KEYUP :
+        keyrelease(&input_state, &k_mappings, event.key.keysym.scancode);
+        break;
+      }
+    }
+
+    // Process game state
+    game_on = process_input_state(input_state);
+
+    // Test plasma
+    plasma_02(&draw_buf, i);
+    i++;
+
+    // Render
     display(&v_context, draw_buf.pixels);
   }
 

@@ -7,7 +7,7 @@ COMPILE=-c -fno-inline -Wall -ggdb
 SDL2_FLAGS=$(shell sdl2-config --cflags)
 SDL2_LIBS=$(shell sdl2-config --libs)
 
-OBJECTS=main.o video.o draw.o
+OBJECTS=main.o video.o draw.o input.o
 
 speed:$(OBJECTS)
 	$(CC) -o speed $(OBJECTS) $(SDL2_LIBS) -lm
@@ -24,6 +24,9 @@ video.o: video.c video.h draw.h
 
 draw.o: draw.c draw.h video.h
 	$(CC) $(COMPILE) draw.c $(SDL2_FLAGS)
+
+input.o: input.c input.h
+	$(CC) $(COMPILE) input.c $(SDL2_FLAGS)
 
 clean:
 	rm -f speed $(OBJECTS) *.core core
