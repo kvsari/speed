@@ -21,15 +21,15 @@ keypress(Uint32 *input_state, const struct KeyboardMappings *k_mappings,
          const SDL_Scancode scancode)
 {
   if (scancode == k_mappings->turn_left) {
-    *input_state |= M_TURN_LEFT;
+    *input_state |= M_I_TURN_LEFT;
   }
   
   if (scancode == k_mappings->turn_right) {
-    *input_state |= M_TURN_RIGHT;
+    *input_state |= M_I_TURN_RIGHT;
   }
   
   if (scancode == k_mappings->quit) {
-    *input_state |= M_QUIT;
+    *input_state |= M_I_QUIT;
   }
 }
 
@@ -38,11 +38,11 @@ keyrelease(Uint32 *input_state, const struct KeyboardMappings *k_mappings,
            const SDL_Scancode scancode)
 {
   if (scancode == k_mappings->turn_left) {
-    *input_state &= R_TURN_LEFT;  
+    *input_state &= R_I_TURN_LEFT;  
   }
   
   if (scancode == k_mappings->turn_right) {
-    *input_state &= R_TURN_RIGHT;
+    *input_state &= R_I_TURN_RIGHT;
   }
   
   //if (scancode == k_mappings.quit) {

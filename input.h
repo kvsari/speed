@@ -10,24 +10,24 @@
 /**
  * A set of binary masks for keeping all keypress state in a `Uint32`.
  */
-#define M_TURN_LEFT       0x00000001
-#define M_TURN_RIGHT      0x00000002
-#define M_LEFT_AIRBRAKE   0x00000004
-#define M_RIGHT_AIRBRAKE  0x00000008
-#define M_NOSE_UP         0x00000010
-#define M_NOSE_DOWN       0x00000020
-#define M_QUIT            0x80000000
+#define M_I_TURN_LEFT       0x00000001
+#define M_I_TURN_RIGHT      0x00000002
+#define M_I_LEFT_AIRBRAKE   0x00000004
+#define M_I_RIGHT_AIRBRAKE  0x00000008
+#define M_I_NOSE_UP         0x00000010
+#define M_I_NOSE_DOWN       0x00000020
+#define M_I_QUIT            0x80000000
 
 /**
  * Reverse masks for turning that specific bit off.
  */
-#define R_TURN_LEFT       0xFFFFFFFE
-#define R_TURN_RIGHT      0xFFFFFFFD
-#define R_LEFT_AIRBRAKE   0xFFFFFFFB
-#define R_RIGHT_AIRBRAKE  0xFFFFFFF7
-#define R_NOSE_UP         0xFFFFFFEF
-#define R_NOSE_DOWN       0xFFFFFFDF
-#define R_QUIT            0x7FFFFFFF
+#define R_I_TURN_LEFT       0xFFFFFFFE
+#define R_I_TURN_RIGHT      0xFFFFFFFD
+#define R_I_LEFT_AIRBRAKE   0xFFFFFFFB
+#define R_I_RIGHT_AIRBRAKE  0xFFFFFFF7
+#define R_I_NOSE_UP         0xFFFFFFEF
+#define R_I_NOSE_DOWN       0xFFFFFFDF
+#define R_I_QUIT            0x7FFFFFFF
 
 /**
  * A linear list of scancodes. Will have to loop through and check each slot.
