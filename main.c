@@ -17,7 +17,7 @@
 void
 sdl_version_log()
 {
-  SDL_version c, l;  
+  SDL_version c, l;
 
   SDL_VERSION(&c);
   SDL_GetVersion(&l);

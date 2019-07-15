@@ -52,7 +52,7 @@ keyrelease(Uint32 *input_state, const struct KeyboardMappings *k_mappings,
 int
 process_input_state(const Uint32 input_state)
 {
-  if (input_state & M_QUIT) {
+  if (input_state & M_I_QUIT) {
     return 0;
   }
 
