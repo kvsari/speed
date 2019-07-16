@@ -13,6 +13,7 @@
 #include "video.h"
 #include "draw.h"
 #include "input.h"
+#include "polyhedron.h"
 
 void
 sdl_version_log()
@@ -212,6 +213,9 @@ main(int argc, char **argv)
   // Test plasma
   int i = 0;
 
+  // Test cube
+  struct Polyhedron t_cube = construct_cube(1);
+
   struct KeyboardMappings k_mappings = default_keyboard_mappings();
   Uint32 input_state = 0;
 
@@ -249,6 +253,15 @@ main(int argc, char **argv)
     display(&v_context, draw_buf.pixels);
   }
 
+  ////////////////////////////////////////////
+  //
+  //  SHUTDOWN
+  //
+  ////////////////////////////////////////////
+
+  // Free up game data
+  free_polyhedron(&t_cube);
+  
   destroy_video_context(&v_context);
   deinitialize_draw_buffer(&draw_buf);
   SDL_Quit();

@@ -7,7 +7,8 @@ COMPILE=-c -fno-inline -Wall -ggdb
 SDL2_FLAGS=$(shell sdl2-config --cflags)
 SDL2_LIBS=$(shell sdl2-config --libs)
 
-OBJECTS=main.o video.o draw.o input.o geop.o
+OBJECTS=main.o video.o draw.o input.o geop.o \
+				polyhedron.o
 
 speed:$(OBJECTS)
 	$(CC) -o speed $(OBJECTS) $(SDL2_LIBS) -lm
@@ -30,6 +31,9 @@ input.o: input.c input.h
 
 geop.o: geop.c geop.h
 	$(CC) $(COMPILE) geop.c
+
+polyhedron.o: polyhedron.c polyhedron.h geop.h
+	$(CC) $(COMPILE) polyhedron.c
 
 clean:
 	rm -f speed $(OBJECTS) *.core core

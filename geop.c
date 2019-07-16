@@ -1,6 +1,18 @@
 #include "geop.h"
 
 struct XYZ
+construct_xyz(const float x, const float y, const float z)
+{
+  struct XYZ new;
+
+  new.x = x;
+  new.y = y;
+  new.z = z;
+
+  return new;
+}
+
+struct XYZ
 vv_sum(const struct XYZ *left, const struct XYZ *right)
 {
   struct XYZ result;

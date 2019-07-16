@@ -21,6 +21,9 @@ struct XYZ {
   float x, y, z;
 };
 
+struct XYZ
+construct_xyz(const float x, const float y, const float z);
+
 /**
  * Sum a vector and vector together.
  */
@@ -45,7 +48,5 @@ vs_mul(const struct XYZ *left, const float scalar);
  */
 struct XYZ
 pp_trn(const struct XYZ *from, const struct XYZ *by);
-
-
 
 #endif
