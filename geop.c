@@ -1,7 +1,7 @@
 #include "geop.h"
 
 struct XYZ
-construct_xyz(const float x, const float y, const float z)
+construct_xyz(const double x, const double y, const double z)
 {
   struct XYZ new;
 

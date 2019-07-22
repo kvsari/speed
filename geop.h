@@ -18,11 +18,11 @@
  * same data struct and leaving it up to context and variable naming to identify.
  */
 struct XYZ {
-  float x, y, z;
+  double x, y, z;
 };
 
 struct XYZ
-construct_xyz(const float x, const float y, const float z);
+construct_xyz(const double x, const double y, const double z);
 
 /**
  * Sum a vector and vector together.

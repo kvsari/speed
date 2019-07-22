@@ -32,13 +32,14 @@ struct Polyhedron {
  * Free memory allocated for the `Polyhedron`.
  */
 void
-free_polyhedron(struct Polyhedron *polyhedron);
+free_polyhedron(struct Polyhedron **polyhedron);
 
 /**
  * Return a cube with the center oriented at (0, 0, 0). This function allocates memory
  * for the returned `Polyhedron` struct describing the cube.
  */
-struct Polyhedron
-construct_cube(const float side_length);
+struct Polyhedron *
+construct_cube(const double side_length);
+
 
 #endif

@@ -4,6 +4,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 
 #include "SDL.h"
 #include "SDL_log.h"
@@ -55,29 +56,6 @@ int initialize_sdl() {
   return 0;
 }
 
-/*
-// Various printouts for debug purposes. Kept here to not clutter main.
-void printouts() {
-  int rgba8888_size = sizeof(union RGBA8888);
-  printf("RGBA8888 size: %d\n", rgba8888_size);
-
-  // Holy crap! I need to refresh my memory on how pointers work! Been too long.
-  unsigned int numbers[8] = {1, 2, 3, 4, 5, 6, 7, 8};
-  unsigned int *n_ptr = numbers;
-  printf("ADDRESS => numbers[0]: %x, n_ptr: %x, &n_ptr: %x\n", &numbers[0], n_ptr, &n_ptr);
-  printf("VALUE   => numbers[0]: %d, *n_ptr: %d\n", numbers[0], *n_ptr);
-  n_ptr++;
-  printf("ADDRESS => numbers[1]: %x, n_ptr: %x, &n_ptr: %x\n", &numbers[1], n_ptr, &n_ptr);
-  printf("VALUE   => numbers[1]: %d, *n_ptr: %d\n", numbers[1], *n_ptr);
-  n_ptr += 1;
-  printf("ADDRESS => numbers[1]: %x, n_ptr: %x, &n_ptr: %x\n", &numbers[1], n_ptr, &n_ptr);
-  printf("VALUE   => numbers[1]: %d, *n_ptr: %d\n", numbers[1], *n_ptr);
-  n_ptr += 4;
-  printf("ADDRESS => numbers[6]: %x, n_ptr: %x, &n_ptr: %x\n", &numbers[6], n_ptr, &n_ptr);
-  printf("VALUE   => numbers[6]: %d, *n_ptr: %d\n", numbers[6], *n_ptr);  
-}
-*/
-
 int
 main(int argc, char **argv)
 {
@@ -103,7 +81,8 @@ main(int argc, char **argv)
   size_t x = v_context.pixels_wide;
   size_t y = v_context.pixels_high;
   if (initialize_draw_buffer(&draw_buf, x, y) != 0) { return 1; }
-  
+
+  /*
   union ABGR8888 c_red;
   c_red.abgr[0] = 255;
   c_red.abgr[1] = 0;
@@ -121,103 +100,35 @@ main(int argc, char **argv)
   c_blue.abgr[1] = 255;
   c_blue.abgr[2] = 0;
   c_blue.abgr[3] = 0;
-
-  /*
-  for (int i = 0; i < 180; ++i) {
-    snow(&draw_buf, colour);
-    display(&v_context, draw_buf.pixels);
-  }
-  */
-
-  /*
-  struct Line line;
-  line.x0 = 30;
-  line.y0 = 30;
-  line.x1 = 20;
-  line.y1 = 20;
-  plot_line(&draw_buf, &line, c_red);
-  display(&v_context, draw_buf.pixels);
-  SDL_Delay(5000);
-  */
-
-  /*
-  struct Rectangle rectangle;
-  rectangle.x = 50;
-  rectangle.y = 50;
-  rectangle.w = 100;
-  rectangle.h = 100;
-  plot_rectangle(&draw_buf, &rectangle, c_blue.val);
-  display(&v_context, draw_buf.pixels);
-  SDL_Delay(5000);
-  */
-
-  /*
-  struct Line line;
-  struct Rectangle rectangle;
-  rectangle.x = 80;
-  rectangle.y = 50;
-  rectangle.w = 150;
-  rectangle.h = 150;
-
-  for (int i = 0; i < 300; ++i) {
-    line.x0 = rand() % draw_buf.pixel_span;
-    line.y0 = rand() % draw_buf.pixel_rows;
-    line.x1 = rand() % draw_buf.pixel_span;
-    line.y1 = rand() % draw_buf.pixel_rows;
-
-    memset(draw_buf.pixels, 0, draw_buf.pixel_count * sizeof(Uint32));
-    plot_line(&draw_buf, &line, c_red.val);
-    plot_rectangle(&draw_buf, &rectangle, c_blue.val);
-    if (clip_line(&draw_buf, &rectangle, &line) == 0) {
-      plot_line(&draw_buf, &line, c_green.val);
-    }
-    display(&v_context, draw_buf.pixels);
-  }
-  */
-
-  /*
-  struct Line line;
-  struct Rectangle rectangle;
-  rectangle.x = 80;
-  rectangle.y = 50;
-  rectangle.w = 150;
-  rectangle.h = 150;
-
-  line.x0 = 10;
-  line.y0 = 10;
-  line.x1 = 200;
-  line.y1 = 200;
-  
-  plot_line(&draw_buf, &line, c_red.val);
-  plot_rectangle(&draw_buf, &rectangle, c_blue.val);
-  if (clip_line(&draw_buf, &rectangle, &line) == 0) {
-    plot_line(&draw_buf, &line, c_green.val);
-  }
-  display(&v_context, draw_buf.pixels);
-  SDL_Delay(5000);
-  */
-
-  /*
-  plasma_01(&draw_buf);
-  display(&v_context, draw_buf.pixels);
-  SDL_Delay(5000);
-  */
-
-  /*
-  for (int i = 0; i < 300; ++i) {
-    plasma_02(&draw_buf, i);
-    display(&v_context, draw_buf.pixels);
-  }
-  */
+  */  
 
   // Test plasma
   int i = 0;
 
-  // Test cube
-  struct Polyhedron t_cube = construct_cube(1);
+  ////////////////////////////////////////////
+  //
+  //  COMPONENT ARRAYS
+  //
+  ////////////////////////////////////////////
 
+  // Positions in world space
+  struct XYZ positions[256];
+
+  // Orientations in world space
+  // TODO
+
+  // Use flyweight pattern to re-use the same polyhedrons. We'd better NULL for safety.
+  struct Polyhedron *polyhedrons[256];
+  for(int i = 0; i < 256; ++i) {
+    polyhedrons[i] = NULL;
+  }
+  // Load in some basic shapes
+  polyhedrons[0] = construct_cube(1);
+  
+  // The first input is mapped to the local machine. Second input if we ever get to it
+  // will be the remote player. Just future proofing and maintaining symmetry.
   struct KeyboardMappings k_mappings = default_keyboard_mappings();
-  Uint32 input_state = 0;
+  uint32_t input_states[2] = { 0, 0 };
 
   ////////////////////////////////////////////
   //
@@ -234,16 +145,16 @@ main(int argc, char **argv)
       switch (event.type) {
       case SDL_QUIT : game_on = 0; break;
       case SDL_KEYDOWN :
-        keypress(&input_state, &k_mappings, event.key.keysym.scancode);
+        keypress(&input_states[0], &k_mappings, event.key.keysym.scancode);
         break;
       case SDL_KEYUP :
-        keyrelease(&input_state, &k_mappings, event.key.keysym.scancode);
+        keyrelease(&input_states[0], &k_mappings, event.key.keysym.scancode);
         break;
       }
     }
 
     // Process game state
-    game_on = process_input_state(input_state);
+    game_on = process_input_state(input_states[0]);
 
     // Test plasma
     plasma_02(&draw_buf, i);
@@ -259,8 +170,12 @@ main(int argc, char **argv)
   //
   ////////////////////////////////////////////
 
-  // Free up game data
-  free_polyhedron(&t_cube);
+  // Free up polyhdrons
+  for (int i = 0; i<256; ++i) {
+    if(polyhedrons[i] != NULL) {
+      free_polyhedron(&polyhedrons[i]);
+    }
+  }
   
   destroy_video_context(&v_context);
   deinitialize_draw_buffer(&draw_buf);
