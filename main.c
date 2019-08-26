@@ -15,6 +15,9 @@
 #include "draw.h"
 #include "input.h"
 #include "polyhedron.h"
+#include "entity.h"
+
+const size_t ASIZE = 200;
 
 void
 sdl_version_log()
@@ -112,14 +115,17 @@ main(int argc, char **argv)
   ////////////////////////////////////////////
 
   // Positions in world space
-  struct XYZ positions[256];
+  struct XYZ positions[ASIZE];
+  positions[0].x = 0;
+  positions[0].y = 0;
+  positions[0].z = 0;
 
   // Orientations in world space
   // TODO
 
   // Use flyweight pattern to re-use the same polyhedrons. We'd better NULL for safety.
-  struct Polyhedron *polyhedrons[256];
-  for(int i = 0; i < 256; ++i) {
+  struct Polyhedron *polyhedrons[ASIZE];
+  for(int i = 0; i < ASIZE; ++i) {
     polyhedrons[i] = NULL;
   }
   // Load in some basic shapes
@@ -129,6 +135,26 @@ main(int argc, char **argv)
   // will be the remote player. Just future proofing and maintaining symmetry.
   struct KeyboardMappings k_mappings = default_keyboard_mappings();
   uint32_t input_states[2] = { 0, 0 };
+
+  ////////////////////////////////////////////
+  //
+  //  ENTITY SETUP
+  //
+  ////////////////////////////////////////////
+  
+  // Once components are loaded into memory, we create entities which are composed of
+  // components. These entities will populate our world.
+
+  // Create our entities and zero the id. 
+  struct Entity entities[ASIZE];
+  for(int i = 0; i < ASIZE; ++i) {
+    entities[i].id = 0;
+  }
+
+  // Setup a simple entity for our cube
+  entities[0].id = 1;
+  register_position(&entities[0], 0); // positions[0]
+  register_model(&entities[0], 0);    // polyhedrons[0]
 
   ////////////////////////////////////////////
   //
@@ -171,7 +197,7 @@ main(int argc, char **argv)
   ////////////////////////////////////////////
 
   // Free up polyhdrons
-  for (int i = 0; i<256; ++i) {
+  for (int i = 0; i < ASIZE; ++i) {
     if(polyhedrons[i] != NULL) {
       free_polyhedron(&polyhedrons[i]);
     }

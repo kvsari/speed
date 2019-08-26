@@ -37,7 +37,7 @@ struct XYZ
 vv_mul(const struct XYZ *left, const struct XYZ *right);
 
 /**
- * Multiple a vector and scalar together.
+ * Multiply a vector and scalar together.
  *
  */
 struct XYZ

@@ -4,7 +4,7 @@
 #include <stdint.h>
 //#include <stdbool.h>
 
-#include "polyhedron.h";
+#include "polyhedron.h"
 
 /**
  * A set of binary masks for whether a component is flagged active for the `Entity`.
@@ -36,7 +36,9 @@
  * Entity struct. To be used in my naive, beginner, ECS.
  *
  * Component indexes are `Uint8` values. Whether a component for the entity exists or not
- * is specified in the `components` flag. Starting from leftmost 
+ * is specified in the `components` flag. Starting from leftmost
+ *
+ * An `id` of 0 is a sentinel value indicating that the `Entity` uninitialized.
  */
 struct Entity {
   uint32_t id;
@@ -48,3 +50,23 @@ struct Entity {
   uint8_t orientation;
   uint8_t model;
 };
+
+void
+register_player_input(struct Entity *entity, uint8_t index);
+
+void
+deregister_player_input(struct Entity *entity);
+
+void
+register_position(struct Entity *entity, uint8_t index);
+
+void
+deregister_position(struct Entity *entity);
+
+void
+register_model(struct Entity *entity, uint8_t index);
+
+void
+deregister_model(struct Entity *entity);
+
+#endif

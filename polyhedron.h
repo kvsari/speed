@@ -41,5 +41,4 @@ free_polyhedron(struct Polyhedron **polyhedron);
 struct Polyhedron *
 construct_cube(const double side_length);
 
-
 #endif
