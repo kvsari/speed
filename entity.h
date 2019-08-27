@@ -2,7 +2,6 @@
 #define _ENTITY_H_
 
 #include <stdint.h>
-//#include <stdbool.h>
 
 #include "polyhedron.h"
 

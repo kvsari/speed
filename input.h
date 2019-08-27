@@ -4,7 +4,6 @@
 #ifndef _INPUT_H_
 #define _INPUT_H_
 
-//#include "SDL_events.h"
 #include "SDL_scancode.h"
 
 /**

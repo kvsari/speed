@@ -37,7 +37,7 @@ union ABGR8888 {
 /**
  * A 2D line for drawing onto a `DrawBuffer`.
  *
-* NOTE: Try using a union of u16[4] and u64.
+ * NOTE: Try using a union of u16[4] and u64.
  */
 struct Line {
   int x0;
@@ -76,18 +76,21 @@ struct DrawBuffer {
 /**
  * Create a `DrawBuffer` set to NULL.
  */
-struct DrawBuffer create_empty_draw_buffer();
+struct DrawBuffer
+create_empty_draw_buffer();
 
 /**
  * Initialize an empty `DrawBuffer`. Returns -1 if there was a malloc error. If the draw
  * buffer is already initialized, will attempt to realloc.
  */
-int initialize_draw_buffer(struct DrawBuffer *draw_buffer, const size_t x, const size_t y);
+int
+initialize_draw_buffer(struct DrawBuffer *draw_buffer, const size_t x, const size_t y);
 
 /**
  * As the name says.
  */
-void deinitialize_draw_buffer(struct DrawBuffer *draw_buffer);
+void
+deinitialize_draw_buffer(struct DrawBuffer *draw_buffer);
 
 //--------------------------------------------
 // Plotting
@@ -96,7 +99,8 @@ void deinitialize_draw_buffer(struct DrawBuffer *draw_buffer);
 /**
  * Pixel memory size is implied by the pointer type. Does no bounds checking!
  */
-void plot_pixel(
+void
+plot_pixel(
   struct DrawBuffer *draw_buffer,
   const int plot_x,
   const int plot_y,
@@ -107,7 +111,8 @@ void plot_pixel(
  * supplied line is modified. 0 is returned if the clipped line is within the `DrawBuffer`.
  * -1 is returned if the line is completely out of bounds.
  */
-int clip_line(
+int
+clip_line(
   const struct DrawBuffer *draw_buffer,
   const struct Rectangle *clip_rect,
   struct Line *line);
@@ -115,7 +120,8 @@ int clip_line(
 /**
  * Use a modified Bresenhams line drawing algorithm to plot a line. Does no bounds checks!
  */
-void plot_line(
+void
+plot_line(
   struct DrawBuffer *draw_buffer,
   const struct Line *line,
   const Uint32 colour);
@@ -123,7 +129,8 @@ void plot_line(
 /**
  * Plot a rectangle onto the `DrawBuffer`. Doesn't do any clipping.
  */
-void plot_rectangle(
+void
+plot_rectangle(
   struct DrawBuffer *draw_buffer,
   const struct Rectangle *rectangle,
   const Uint32 colour);
@@ -136,16 +143,19 @@ void plot_rectangle(
 /**
  * Draw one frame of snow.
  */
-void snow(struct DrawBuffer *draw_buffer, const Uint32 snow_colour);
+void
+snow(struct DrawBuffer *draw_buffer, const Uint32 snow_colour);
 
 /**
  * Simple plasma using expensive sine functions.
  */
-void plasma_01(struct DrawBuffer *draw_buffer);
+void
+plasma_01(struct DrawBuffer *draw_buffer);
 
 /**
  * Same as above but use an increment to make it move.
  */
-void plasma_02(struct DrawBuffer *draw_buffer, int inc);
+void
+plasma_02(struct DrawBuffer *draw_buffer, int inc);
 
 # endif

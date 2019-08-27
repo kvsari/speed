@@ -8,7 +8,7 @@ SDL2_FLAGS=$(shell sdl2-config --cflags)
 SDL2_LIBS=$(shell sdl2-config --libs)
 
 OBJECTS=main.o video.o draw.o input.o geop.o \
-				polyhedron.o entity.o
+				polyhedron.o entity.o world.o
 
 speed:$(OBJECTS)
 	$(CC) -o speed $(OBJECTS) $(SDL2_LIBS) -lm
@@ -37,6 +37,9 @@ polyhedron.o: polyhedron.c polyhedron.h geop.h
 
 entity.o: entity.c entity.h polyhedron.h
 	$(CC) $(COMPILE) entity.c
+
+world.o: world.c world.h
+	$(CC) $(COMPILE) world.c
 
 clean:
 	rm -f speed $(OBJECTS) *.core core
