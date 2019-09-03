@@ -13,6 +13,9 @@
 
 #include <stdint.h>
 
+#include "draw.h"
+#include "entity.h"
+#include "world.h"
 #include "geop.h"
 
 /**
@@ -24,5 +27,22 @@ struct Camera {
   uint8_t player_entity;
   struct XYZ position;
 };
+
+//void
+//move_camera(struct Camera *camera, struct Entity
+
+/**
+ * Draw the provided `Scene` using the `Camera` into the `DrawBuffer`. This draw
+ * constitutes one frame.
+ */
+void
+draw_picture(
+  struct DrawBuffer *draw_buf,
+  struct Camera *camera,
+  struct Scene *scene,
+  struct Entity *entities,
+  struct XYZ *positions,
+  struct Polyhedron *polyhedrons,
+  size_t asize);
 
 #endif

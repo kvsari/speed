@@ -16,6 +16,8 @@
 #include "input.h"
 #include "polyhedron.h"
 #include "entity.h"
+#include "camera.h"
+#include "world.h"
 
 const size_t ASIZE = 200;
 
@@ -84,6 +86,13 @@ main(int argc, char **argv)
   size_t x = v_context.pixels_wide;
   size_t y = v_context.pixels_high;
   if (initialize_draw_buffer(&draw_buf, x, y) != 0) { return 1; }
+
+  // Prepare our rendering states
+  struct Camera camera;
+  camera.position.x = 0;
+  camera.position.y = 0;
+  camera.position.z = -100;
+  struct Scene *scene = malloc_scene(ASIZE);
 
   /*
   union ABGR8888 c_red;
@@ -155,6 +164,7 @@ main(int argc, char **argv)
   entities[0].id = 1;
   register_position(&entities[0], 0); // positions[0]
   register_model(&entities[0], 0);    // polyhedrons[0]
+  camera.player_entity = 0; // Tell the camera which entity is the player.
 
   ////////////////////////////////////////////
   //
@@ -182,9 +192,14 @@ main(int argc, char **argv)
     // Process game state
     game_on = process_input_state(input_states[0]);
 
+    /*
     // Test plasma
     plasma_02(&draw_buf, i);
     i++;
+    */
+
+    // Draw what the camera sees.
+    draw_picture(&draw_buf, &camera, scene, &entities, &positions, &polyhedrons, ASIZE);
 
     // Render
     display(&v_context, draw_buf.pixels);
