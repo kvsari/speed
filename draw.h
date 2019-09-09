@@ -9,6 +9,8 @@
 # ifndef _DRAW_H_
 # define _DRAW_H_
 
+#include <stdint.h>
+
 #include "video.h"
 
 //--------------------------------------------
@@ -91,6 +93,12 @@ initialize_draw_buffer(struct DrawBuffer *draw_buffer, const size_t x, const siz
  */
 void
 deinitialize_draw_buffer(struct DrawBuffer *draw_buffer);
+
+/**
+ * Set all the memory of the draw buffer to 0.
+ */
+void
+zero_draw_buffer(struct DrawBuffer *draw_buffer);
 
 //--------------------------------------------
 // Plotting

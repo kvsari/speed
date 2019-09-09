@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "polyhedron.h"
 
@@ -10,6 +11,18 @@ free_polyhedron(struct Polyhedron **polyhedron)
   (*polyhedron)->vertices = 0;
   free(*polyhedron);
   *polyhedron = NULL;
+}
+
+struct Polyhedron *
+clone_polyhedron(struct Polyhedron *polyhedron)
+{
+  struct Polyhedron *clone = malloc(sizeof(struct Polyhedron));
+  size_t size = sizeof(struct XYZ) * polyhedron->vertices;
+  struct XYZ *vertex = malloc(size);
+  clone->vertices = polyhedron->vertices;
+  clone->vertex = memcpy(clone->vertex, polyhedron->vertex, size);
+
+  return clone;
 }
 
 struct Polyhedron *

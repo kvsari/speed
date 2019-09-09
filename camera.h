@@ -42,7 +42,7 @@ draw_picture(
   struct Scene *scene,
   struct Entity *entities,
   struct XYZ *positions,
-  struct Polyhedron *polyhedrons,
+  struct Polyhedron **polyhedrons,
   size_t asize);
 
 #endif

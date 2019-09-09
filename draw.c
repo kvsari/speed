@@ -4,12 +4,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
+#include <stdint.h>
 
 #include "SDL_log.h"
 
 #include "draw.h"
 
-struct DrawBuffer create_empty_draw_buffer() {
+struct DrawBuffer
+create_empty_draw_buffer()
+{
   struct DrawBuffer draw_buffer;
   draw_buffer.pixels = NULL;
   draw_buffer.pixel_count = 0;
@@ -19,7 +23,9 @@ struct DrawBuffer create_empty_draw_buffer() {
   return draw_buffer;
 }
 
-int initialize_draw_buffer(struct DrawBuffer *draw_buffer, const size_t x, const size_t y) {
+int
+initialize_draw_buffer(struct DrawBuffer *draw_buffer, const size_t x, const size_t y)
+{
   draw_buffer->pixels = realloc(draw_buffer->pixels, x * y * sizeof(Uint32));
 
   if (draw_buffer->pixels == NULL) {
@@ -39,7 +45,9 @@ int initialize_draw_buffer(struct DrawBuffer *draw_buffer, const size_t x, const
   return 0;
 }
 
-void deinitialize_draw_buffer(struct DrawBuffer *draw_buffer) {
+void
+deinitialize_draw_buffer(struct DrawBuffer *draw_buffer)
+{
   free(draw_buffer->pixels);
   draw_buffer->pixels = NULL;
   draw_buffer->pixel_count = 0;
@@ -47,7 +55,17 @@ void deinitialize_draw_buffer(struct DrawBuffer *draw_buffer) {
   draw_buffer->pixel_rows = 0;
 }
 
-void plot_pixel(
+void
+zero_draw_buffer(struct DrawBuffer *draw_buffer)
+{
+  memset(
+    draw_buffer->pixels,
+    0,
+    draw_buffer->pixel_span * draw_buffer->pixel_rows  * sizeof(uint32_t));
+}
+
+void
+plot_pixel(
   struct DrawBuffer *draw_buffer,
   const int plot_x,
   const int plot_y,
@@ -58,7 +76,8 @@ void plot_pixel(
   *pixels = colour;
 }
 
-int clip_line(
+int
+clip_line(
   const struct DrawBuffer *draw_buffer,
   const struct Rectangle *clip_rect,
   struct Line *line)
@@ -165,7 +184,8 @@ int clip_line(
   return 0;
 }
 
-void plot_line(
+void
+plot_line(
   struct DrawBuffer *draw_buffer,
   const struct Line *line,
   const Uint32 colour)
@@ -219,7 +239,8 @@ void plot_line(
   }
 }
 
-void plot_rectangle(
+void
+plot_rectangle(
   struct DrawBuffer *draw_buffer,
   const struct Rectangle *rectangle,
   const Uint32 colour)
@@ -250,7 +271,9 @@ void plot_rectangle(
 //   TESTING GRAPHICAL FUNCTIONS //
 ///////////////////////////////////
 
-void snow(struct DrawBuffer *draw_buffer, const Uint32 snow_colour) {
+void
+snow(struct DrawBuffer *draw_buffer, const Uint32 snow_colour)
+{
   Uint32 *pixels = draw_buffer->pixels;
   memset(pixels, 0, draw_buffer->pixel_count * sizeof(Uint32));
   for (int i = 0; i < draw_buffer->pixel_count; i++) {
@@ -261,7 +284,9 @@ void snow(struct DrawBuffer *draw_buffer, const Uint32 snow_colour) {
   }
 }
 
-void plasma_01(struct DrawBuffer *draw_buffer) {
+void
+plasma_01(struct DrawBuffer *draw_buffer)
+{
   Uint32 *pixels = draw_buffer->pixels;
   union ABGR8888 colour;
   colour.abgr[0] = 255;
@@ -278,11 +303,15 @@ void plasma_01(struct DrawBuffer *draw_buffer) {
   }
 }
 
-float dist(float a, float b, float c, float d) {
+float
+dist(float a, float b, float c, float d)
+{
   return sqrt((a - c) * (a - c) + (b - d) * (b - d));
 }
 
-void plasma_02(struct DrawBuffer *draw_buffer, int inc) {
+void
+plasma_02(struct DrawBuffer *draw_buffer, int inc)
+{
   int inc1 = inc % 100;
   int inc2 = inc % 200;
   int diff = inc2 - inc1;

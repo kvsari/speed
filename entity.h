@@ -48,6 +48,7 @@ struct Entity {
   uint8_t position;
   uint8_t orientation;
   uint8_t model;
+  uint8_t translated;
 };
 
 void
@@ -63,9 +64,16 @@ void
 deregister_position(struct Entity *entity);
 
 void
-register_model(struct Entity *entity, uint8_t index);
+register_model(struct Entity *entity, uint8_t i_model, uint8_t i_translated);
 
 void
 deregister_model(struct Entity *entity);
+
+void
+register_orientation(struct Entity *entity, uint8_t index);
+
+void
+deregister_orientation(struct Entity *entity);
+
 
 #endif

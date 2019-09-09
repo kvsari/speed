@@ -18,6 +18,7 @@
 #include "entity.h"
 #include "camera.h"
 #include "world.h"
+#include "orientation.h"
 
 const size_t ASIZE = 200;
 
@@ -129,8 +130,11 @@ main(int argc, char **argv)
   positions[0].y = 0;
   positions[0].z = 0;
 
-  // Orientations in world space
-  // TODO
+  // Euler orientations in world space
+  struct EulerFix orientations[ASIZE];
+  orientations[0].yaw   = 0.0;
+  orientations[0].pitch = 0.0;
+  orientations[0].roll  = 0.0;
 
   // Use flyweight pattern to re-use the same polyhedrons. We'd better NULL for safety.
   struct Polyhedron *polyhedrons[ASIZE];
@@ -139,6 +143,14 @@ main(int argc, char **argv)
   }
   // Load in some basic shapes
   polyhedrons[0] = construct_cube(1);
+
+  // Translated polyhedrons (applied position and orientations in world space).
+  struct Polyhedron *translated[ASIZE];
+  for(int i = 0; i < ASIZE; ++i) {
+    polyhedrons[i] = NULL;
+  }
+  // Prepare our clone for the entity;
+  translated[0] = clone_polyhedron(polyhedrons[0]);
   
   // The first input is mapped to the local machine. Second input if we ever get to it
   // will be the remote player. Just future proofing and maintaining symmetry.
@@ -162,8 +174,8 @@ main(int argc, char **argv)
 
   // Setup a simple entity for our cube
   entities[0].id = 1;
-  register_position(&entities[0], 0); // positions[0]
-  register_model(&entities[0], 0);    // polyhedrons[0]
+  register_position(&entities[0], 0);    // positions[0]
+  register_model(&entities[0], 0, 0);    // polyhedrons[0] & translations[0]
   camera.player_entity = 0; // Tell the camera which entity is the player.
 
   ////////////////////////////////////////////
@@ -199,7 +211,7 @@ main(int argc, char **argv)
     */
 
     // Draw what the camera sees.
-    draw_picture(&draw_buf, &camera, scene, &entities, &positions, &polyhedrons, ASIZE);
+    draw_picture(&draw_buf, &camera, scene, entities, positions, polyhedrons, ASIZE);
 
     // Render
     display(&v_context, draw_buf.pixels);
