@@ -12,6 +12,18 @@ construct_xyz(const double x, const double y, const double z)
   return new;
 }
 
+struct EulerFix
+construct_euler_fix(const double yaw, const double pitch, const double roll)
+{
+  struct EulerFix new;
+
+  new.yaw = yaw;
+  new.pitch = pitch;
+  new.roll = roll;
+
+  return new;
+}
+
 struct XYZ
 vv_sum(const struct XYZ *left, const struct XYZ *right)
 {

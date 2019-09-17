@@ -23,10 +23,10 @@ deregister_position(struct Entity *entity) {
 }
 
 void
-register_model(struct Entity *entity, uint8_t i_model, uint8_t i_translated) {
+register_model(struct Entity *entity, uint8_t i_model, uint8_t i_transformed) {
   entity->components |= M_C_MODEL;
   entity->model = i_model;
-  entity->translated = i_translated;
+  entity->transformed = i_transformed;
 }
 
 void

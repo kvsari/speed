@@ -18,7 +18,7 @@
 #include "entity.h"
 #include "camera.h"
 #include "world.h"
-#include "orientation.h"
+#include "transform.h"
 
 const size_t ASIZE = 200;
 
@@ -115,9 +115,6 @@ main(int argc, char **argv)
   c_blue.abgr[3] = 0;
   */  
 
-  // Test plasma
-  int i = 0;
-
   ////////////////////////////////////////////
   //
   //  COMPONENT ARRAYS
@@ -144,13 +141,14 @@ main(int argc, char **argv)
   // Load in some basic shapes
   polyhedrons[0] = construct_cube(1);
 
-  // Translated polyhedrons (applied position and orientations in world space).
-  struct Polyhedron *translated[ASIZE];
+  // Transformed polyhedrons (applied position and orientations in world space).
+  struct Polyhedron *transformed[ASIZE];
   for(int i = 0; i < ASIZE; ++i) {
     polyhedrons[i] = NULL;
   }
-  // Prepare our clone for the entity;
-  translated[0] = clone_polyhedron(polyhedrons[0]);
+  // Prepare our clone for the entity. There must be as many clones (of the right type) for
+  // as many entities we have that have models (polyhedrons).
+  transformed[0] = clone_polyhedron(polyhedrons[0]);
   
   // The first input is mapped to the local machine. Second input if we ever get to it
   // will be the remote player. Just future proofing and maintaining symmetry.
@@ -204,14 +202,12 @@ main(int argc, char **argv)
     // Process game state
     game_on = process_input_state(input_states[0]);
 
-    /*
-    // Test plasma
-    plasma_02(&draw_buf, i);
-    i++;
-    */
-
+    // Update the models on the scene...
+    //transform_scene_models(
+    //  scene, entities, positions, orientations, polyhedrons, transformed, ASIZE);
+    
     // Draw what the camera sees.
-    draw_picture(&draw_buf, &camera, scene, entities, positions, polyhedrons, ASIZE);
+    draw_picture(&draw_buf, &camera, scene, entities, positions, transformed, ASIZE);
 
     // Render
     display(&v_context, draw_buf.pixels);

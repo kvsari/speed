@@ -20,7 +20,7 @@ clone_polyhedron(struct Polyhedron *polyhedron)
   size_t size = sizeof(struct XYZ) * polyhedron->vertices;
   struct XYZ *vertex = malloc(size);
   clone->vertices = polyhedron->vertices;
-  clone->vertex = memcpy(clone->vertex, polyhedron->vertex, size);
+  clone->vertex = memcpy(vertex, polyhedron->vertex, size);
 
   return clone;
 }

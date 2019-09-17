@@ -8,8 +8,8 @@ SDL2_FLAGS=$(shell sdl2-config --cflags)
 SDL2_LIBS=$(shell sdl2-config --libs)
 
 OBJECTS=main.o video.o draw.o input.o geop.o \
-				polyhedron.o entity.o world.o camera.o \
-				orientation.o
+        polyhedron.o entity.o world.o camera.o \
+        transform.o
 
 speed:$(OBJECTS)
 	$(CC) -o speed $(OBJECTS) $(SDL2_LIBS) -lm
@@ -45,8 +45,9 @@ world.o: world.c world.h
 camera.o: camera.c camera.h draw.h entity.h world.h geop.h
 	$(CC) $(COMPILE) camera.c $(SDL2_FLAGS)
 
-orientation.o: orientation.c orientation.h
-	$(CC) $(COMPILE) orientation.c
+transform.o: transform.c transform.h geop.h world.h \
+             polyhedron.h
+	$(CC) $(COMPILE) transform.c
 
 clean:
 	rm -f speed $(OBJECTS) *.core core

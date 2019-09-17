@@ -25,6 +25,21 @@ struct XYZ
 construct_xyz(const double x, const double y, const double z);
 
 /**
+ * Orientation in Euler angles yaw, pitch and roll. Angles are in radians. Beware of
+ * gimbal lock.
+ *
+ * THINK: Couldn't this just re-use `XYZ`? I mean the data types are the same...
+ */
+struct EulerFix {
+  double yaw;
+  double pitch;
+  double roll;
+};
+
+struct EulerFix
+construct_euler_fix(const double yaw, const double pitch, const double roll);
+
+/**
  * Sum a vector and vector together.
  */
 struct XYZ
