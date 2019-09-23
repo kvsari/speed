@@ -144,7 +144,7 @@ main(int argc, char **argv)
   // Transformed polyhedrons (applied position and orientations in world space).
   struct Polyhedron *transformed[ASIZE];
   for(int i = 0; i < ASIZE; ++i) {
-    polyhedrons[i] = NULL;
+    transformed[i] = NULL;
   }
   // Prepare our clone for the entity. There must be as many clones (of the right type) for
   // as many entities we have that have models (polyhedrons).
