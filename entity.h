@@ -3,8 +3,6 @@
 
 #include <stdint.h>
 
-#include "polyhedron.h"
-
 /**
  * A set of binary masks for whether a component is flagged active for the `Entity`.
  */
@@ -52,28 +50,28 @@ struct Entity {
 };
 
 void
-register_player_input(struct Entity *entity, uint8_t index);
+EN_register_player_input(struct Entity *entity, uint8_t index);
 
 void
-deregister_player_input(struct Entity *entity);
+EN_deregister_player_input(struct Entity *entity);
 
 void
-register_position(struct Entity *entity, uint8_t index);
+EN_register_position(struct Entity *entity, uint8_t index);
 
 void
-deregister_position(struct Entity *entity);
+EN_deregister_position(struct Entity *entity);
 
 void
-register_model(struct Entity *entity, uint8_t i_model, uint8_t i_transformed);
+EN_register_model(struct Entity *entity, uint8_t i_model, uint8_t i_transformed);
 
 void
-deregister_model(struct Entity *entity);
+EN_deregister_model(struct Entity *entity);
 
 void
-register_orientation(struct Entity *entity, uint8_t index);
+EN_register_orientation(struct Entity *entity, uint8_t index);
 
 void
-deregister_orientation(struct Entity *entity);
+EN_deregister_orientation(struct Entity *entity);
 
 
 #endif

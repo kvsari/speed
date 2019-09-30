@@ -28,16 +28,16 @@ enum Resolution { W320X240, W640X480, W800X600, W1024X768, W1600X1200,
  * Convenience function to return a NULL initialized `VideoContext`.
  */
 struct VideoContext
-create_empty_video_context();
+VD_create_empty_video_context();
 
 /**
  * Setup the window and video card draw context. Also disable any screensaver.
  */
 int
-bring_up_video(struct VideoContext *v_context, const enum Resolution resolution);
+VD_bring_up_video(struct VideoContext *v_context, const enum Resolution resolution);
 
 void
-destroy_video_context(struct VideoContext *v_context);
+VD_destroy_video_context(struct VideoContext *v_context);
 
 /**
  * Transfer whatever is pointed at by `pixels` into the video device. The block of memory
@@ -45,6 +45,6 @@ destroy_video_context(struct VideoContext *v_context);
  * `VideoContext`. If it's not the exact size undefined behaviour will happen.
  */
 void
-display(struct VideoContext *v_context, Uint32 *pixels);
+VD_display(struct VideoContext *v_context, Uint32 *pixels);
 
 #endif

@@ -1,7 +1,7 @@
 #include "input.h"
 
 struct KeyboardMappings
-default_keyboard_mappings()
+IN_default_keyboard_mappings()
 {
   struct KeyboardMappings km;
 
@@ -17,8 +17,8 @@ default_keyboard_mappings()
 }
 
 void
-keypress(Uint32 *input_state, const struct KeyboardMappings *k_mappings,
-         const SDL_Scancode scancode)
+IN_keypress(Uint32 *input_state, const struct KeyboardMappings *k_mappings,
+            const SDL_Scancode scancode)
 {
   if (scancode == k_mappings->turn_left) {
     *input_state |= M_I_TURN_LEFT;
@@ -34,8 +34,8 @@ keypress(Uint32 *input_state, const struct KeyboardMappings *k_mappings,
 }
 
 void
-keyrelease(Uint32 *input_state, const struct KeyboardMappings *k_mappings,
-           const SDL_Scancode scancode)
+IN_keyrelease(Uint32 *input_state, const struct KeyboardMappings *k_mappings,
+              const SDL_Scancode scancode)
 {
   if (scancode == k_mappings->turn_left) {
     *input_state &= R_I_TURN_LEFT;  
@@ -50,7 +50,7 @@ keyrelease(Uint32 *input_state, const struct KeyboardMappings *k_mappings,
 }
 
 int
-process_input_state(const Uint32 input_state)
+IN_process_input_state(const Uint32 input_state)
 {
   if (input_state & M_I_QUIT) {
     return 0;

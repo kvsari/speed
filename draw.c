@@ -12,7 +12,7 @@
 #include "draw.h"
 
 struct DrawBuffer
-create_empty_draw_buffer()
+DR_create_empty_draw_buffer()
 {
   struct DrawBuffer draw_buffer;
   draw_buffer.pixels = NULL;
@@ -24,7 +24,7 @@ create_empty_draw_buffer()
 }
 
 int
-initialize_draw_buffer(struct DrawBuffer *draw_buffer, const size_t x, const size_t y)
+DR_initialize_draw_buffer(struct DrawBuffer *draw_buffer, const size_t x, const size_t y)
 {
   draw_buffer->pixels = realloc(draw_buffer->pixels, x * y * sizeof(Uint32));
 
@@ -46,7 +46,7 @@ initialize_draw_buffer(struct DrawBuffer *draw_buffer, const size_t x, const siz
 }
 
 void
-deinitialize_draw_buffer(struct DrawBuffer *draw_buffer)
+DR_deinitialize_draw_buffer(struct DrawBuffer *draw_buffer)
 {
   free(draw_buffer->pixels);
   draw_buffer->pixels = NULL;
@@ -56,7 +56,7 @@ deinitialize_draw_buffer(struct DrawBuffer *draw_buffer)
 }
 
 void
-zero_draw_buffer(struct DrawBuffer *draw_buffer)
+DR_zero_draw_buffer(struct DrawBuffer *draw_buffer)
 {
   memset(
     draw_buffer->pixels,
@@ -65,7 +65,7 @@ zero_draw_buffer(struct DrawBuffer *draw_buffer)
 }
 
 void
-plot_pixel(
+DR_plot_pixel(
   struct DrawBuffer *draw_buffer,
   const int plot_x,
   const int plot_y,
@@ -77,7 +77,7 @@ plot_pixel(
 }
 
 int
-clip_line(
+DR_clip_line(
   const struct DrawBuffer *draw_buffer,
   const struct Rectangle *clip_rect,
   struct Line *line)
@@ -185,7 +185,7 @@ clip_line(
 }
 
 void
-plot_line(
+DR_plot_line(
   struct DrawBuffer *draw_buffer,
   const struct Line *line,
   const Uint32 colour)
@@ -240,7 +240,7 @@ plot_line(
 }
 
 void
-plot_rectangle(
+DR_plot_rectangle(
   struct DrawBuffer *draw_buffer,
   const struct Rectangle *rectangle,
   const Uint32 colour)
@@ -272,7 +272,7 @@ plot_rectangle(
 ///////////////////////////////////
 
 void
-snow(struct DrawBuffer *draw_buffer, const Uint32 snow_colour)
+DR_snow(struct DrawBuffer *draw_buffer, const Uint32 snow_colour)
 {
   Uint32 *pixels = draw_buffer->pixels;
   memset(pixels, 0, draw_buffer->pixel_count * sizeof(Uint32));
@@ -285,7 +285,7 @@ snow(struct DrawBuffer *draw_buffer, const Uint32 snow_colour)
 }
 
 void
-plasma_01(struct DrawBuffer *draw_buffer)
+DR_plasma_01(struct DrawBuffer *draw_buffer)
 {
   Uint32 *pixels = draw_buffer->pixels;
   union ABGR8888 colour;
@@ -310,7 +310,7 @@ dist(float a, float b, float c, float d)
 }
 
 void
-plasma_02(struct DrawBuffer *draw_buffer, int inc)
+DR_plasma_02(struct DrawBuffer *draw_buffer, int inc)
 {
   int inc1 = inc % 100;
   int inc2 = inc % 200;

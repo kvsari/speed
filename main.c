@@ -75,25 +75,25 @@ main(int argc, char **argv)
   /////////////////////////////////////////////
 
   // Setup video
-  struct VideoContext v_context = create_empty_video_context();
+  struct VideoContext v_context = VD_create_empty_video_context();
   if (initialize_sdl() != 0) { return 1; }
-  if (bring_up_video(&v_context, W320X240) != 0) { return 1; }
+  if (VD_bring_up_video(&v_context, W320X240) != 0) { return 1; }
   //if (bring_up_video(&v_context, F640X480) != 0) { return 1; }
   //if (bring_up_video(&v_context, F800X600) != 0) { return 1; }
   //if (bring_up_video(&v_context, F1024X768) != 0) { return 1; }
 
   // Setup draw buffer to same size of the video surface.
-  struct DrawBuffer draw_buf = create_empty_draw_buffer();
+  struct DrawBuffer draw_buf = DR_create_empty_draw_buffer();
   size_t x = v_context.pixels_wide;
   size_t y = v_context.pixels_high;
-  if (initialize_draw_buffer(&draw_buf, x, y) != 0) { return 1; }
+  if (DR_initialize_draw_buffer(&draw_buf, x, y) != 0) { return 1; }
 
   // Prepare our rendering states
   struct Camera camera;
   camera.position.x = 0;
   camera.position.y = 0;
   camera.position.z = -100;
-  struct Scene *scene = malloc_scene(ASIZE);
+  struct Scene *scene = WD_malloc_scene(ASIZE);
 
   /*
   union ABGR8888 c_red;
@@ -139,7 +139,7 @@ main(int argc, char **argv)
     polyhedrons[i] = NULL;
   }
   // Load in some basic shapes
-  polyhedrons[0] = construct_cube(1);
+  polyhedrons[0] = PH_construct_cube(1);
 
   // Transformed polyhedrons (applied position and orientations in world space).
   struct Polyhedron *transformed[ASIZE];
@@ -148,11 +148,11 @@ main(int argc, char **argv)
   }
   // Prepare our clone for the entity. There must be as many clones (of the right type) for
   // as many entities we have that have models (polyhedrons).
-  transformed[0] = clone_polyhedron(polyhedrons[0]);
+  transformed[0] = PH_clone_polyhedron(polyhedrons[0]);
   
   // The first input is mapped to the local machine. Second input if we ever get to it
   // will be the remote player. Just future proofing and maintaining symmetry.
-  struct KeyboardMappings k_mappings = default_keyboard_mappings();
+  struct KeyboardMappings k_mappings = IN_default_keyboard_mappings();
   uint32_t input_states[2] = { 0, 0 };
 
   ////////////////////////////////////////////
@@ -172,8 +172,8 @@ main(int argc, char **argv)
 
   // Setup a simple entity for our cube
   entities[0].id = 1;
-  register_position(&entities[0], 0);    // positions[0]
-  register_model(&entities[0], 0, 0);    // polyhedrons[0] & translations[0]
+  EN_register_position(&entities[0], 0);    // positions[0]
+  EN_register_model(&entities[0], 0, 0);    // polyhedrons[0] & translations[0]
   camera.player_entity = 0; // Tell the camera which entity is the player.
 
   ////////////////////////////////////////////
@@ -191,26 +191,26 @@ main(int argc, char **argv)
       switch (event.type) {
       case SDL_QUIT : game_on = 0; break;
       case SDL_KEYDOWN :
-        keypress(&input_states[0], &k_mappings, event.key.keysym.scancode);
+        IN_keypress(&input_states[0], &k_mappings, event.key.keysym.scancode);
         break;
       case SDL_KEYUP :
-        keyrelease(&input_states[0], &k_mappings, event.key.keysym.scancode);
+        IN_keyrelease(&input_states[0], &k_mappings, event.key.keysym.scancode);
         break;
       }
     }
 
     // Process game state
-    game_on = process_input_state(input_states[0]);
+    game_on = IN_process_input_state(input_states[0]);
 
     // Update the models on the scene...
     //transform_scene_models(
     //  scene, entities, positions, orientations, polyhedrons, transformed, ASIZE);
     
     // Draw what the camera sees.
-    draw_picture(&draw_buf, &camera, scene, entities, positions, transformed, ASIZE);
+    CM_draw_picture(&draw_buf, &camera, scene, entities, positions, transformed, ASIZE);
 
     // Render
-    display(&v_context, draw_buf.pixels);
+    VD_display(&v_context, draw_buf.pixels);
   }
 
   ////////////////////////////////////////////
@@ -222,12 +222,13 @@ main(int argc, char **argv)
   // Free up polyhdrons
   for (int i = 0; i < ASIZE; ++i) {
     if(polyhedrons[i] != NULL) {
-      free_polyhedron(&polyhedrons[i]);
+      PH_free_polyhedron(&polyhedrons[i]);
     }
   }
   
-  destroy_video_context(&v_context);
-  deinitialize_draw_buffer(&draw_buf);
+  VD_destroy_video_context(&v_context);
+  DR_deinitialize_draw_buffer(&draw_buf);
+  WD_free_scene(&scene);
   SDL_Quit();
   return 0;
 }

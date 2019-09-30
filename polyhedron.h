@@ -32,20 +32,20 @@ struct Polyhedron {
  * Free memory allocated for the `Polyhedron`.
  */
 void
-free_polyhedron(struct Polyhedron **polyhedron);
+PH_free_polyhedron(struct Polyhedron **polyhedron);
 
 /**
  * Make a deep copy of an existing `Polyhedron`. Mainly to allocate a same size memory
  * chunk with which to store the translated form of a model.
  */
 struct Polyhedron *
-clone_polyhedron(struct Polyhedron *polyhedron);
+PH_clone_polyhedron(struct Polyhedron *polyhedron);
 
 /**
  * Return a cube with the center oriented at (0, 0, 0). This function allocates memory
  * for the returned `Polyhedron` struct describing the cube.
  */
 struct Polyhedron *
-construct_cube(const double side_length);
+PH_construct_cube(const double side_length);
 
 #endif

@@ -22,7 +22,7 @@ struct XYZ {
 };
 
 struct XYZ
-construct_xyz(const double x, const double y, const double z);
+GP_construct_xyz(const double x, const double y, const double z);
 
 /**
  * Orientation in Euler angles yaw, pitch and roll. Angles are in radians. Beware of
@@ -37,31 +37,31 @@ struct EulerFix {
 };
 
 struct EulerFix
-construct_euler_fix(const double yaw, const double pitch, const double roll);
+GP_construct_euler_fix(const double yaw, const double pitch, const double roll);
 
 /**
  * Sum a vector and vector together.
  */
 struct XYZ
-vv_sum(const struct XYZ *left, const struct XYZ *right);
+GP_vv_sum(const struct XYZ *left, const struct XYZ *right);
 
 /**
  * Multiply a vector and vector together.
  */
 struct XYZ
-vv_mul(const struct XYZ *left, const struct XYZ *right);
+GP_vv_mul(const struct XYZ *left, const struct XYZ *right);
 
 /**
  * Multiply a vector and scalar together.
  *
  */
 struct XYZ
-vs_mul(const struct XYZ *left, const float scalar);
+GP_vs_mul(const struct XYZ *left, const float scalar);
 
 /**
  * Translate a point by a a translation displacement for each axis.
  */
 struct XYZ
-pp_trn(const struct XYZ *from, const struct XYZ *by);
+GP_pp_trn(const struct XYZ *from, const struct XYZ *by);
 
 #endif

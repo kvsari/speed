@@ -12,7 +12,7 @@ void
 in_place_translate(struct XYZ *position, struct XYZ *vertex, size_t count);
 
 void
-transform_scene_models(
+TF_transform_scene_models(
   struct Scene *restrict scene,
   struct Entity *entities,
   struct XYZ *positions,

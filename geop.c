@@ -1,7 +1,7 @@
 #include "geop.h"
 
 struct XYZ
-construct_xyz(const double x, const double y, const double z)
+GP_construct_xyz(const double x, const double y, const double z)
 {
   struct XYZ new;
 
@@ -13,7 +13,7 @@ construct_xyz(const double x, const double y, const double z)
 }
 
 struct EulerFix
-construct_euler_fix(const double yaw, const double pitch, const double roll)
+GP_construct_euler_fix(const double yaw, const double pitch, const double roll)
 {
   struct EulerFix new;
 
@@ -25,7 +25,7 @@ construct_euler_fix(const double yaw, const double pitch, const double roll)
 }
 
 struct XYZ
-vv_sum(const struct XYZ *left, const struct XYZ *right)
+GP_vv_sum(const struct XYZ *left, const struct XYZ *right)
 {
   struct XYZ result;
 
@@ -37,7 +37,7 @@ vv_sum(const struct XYZ *left, const struct XYZ *right)
 }
 
 struct XYZ
-vv_mul(const struct XYZ *left, const struct XYZ *right)
+GP_vv_mul(const struct XYZ *left, const struct XYZ *right)
 {
   struct XYZ result;
 
@@ -49,7 +49,7 @@ vv_mul(const struct XYZ *left, const struct XYZ *right)
 }
 
 struct XYZ
-vs_mul(const struct XYZ *left, const float scalar)
+GP_vs_mul(const struct XYZ *left, const float scalar)
 {
   struct XYZ result;
 
@@ -61,7 +61,7 @@ vs_mul(const struct XYZ *left, const float scalar)
 }
 
 struct XYZ
-pp_trn(const struct XYZ *from, const struct XYZ *by)
+GP_pp_trn(const struct XYZ *from, const struct XYZ *by)
 {
   struct XYZ result;
 

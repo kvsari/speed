@@ -2,9 +2,10 @@
 #include <string.h>
 
 #include "polyhedron.h"
+#include "geop.h"
 
 void
-free_polyhedron(struct Polyhedron **polyhedron)
+PH_free_polyhedron(struct Polyhedron **polyhedron)
 {
   free((*polyhedron)->vertex);
   (*polyhedron)->vertex = NULL;
@@ -14,7 +15,7 @@ free_polyhedron(struct Polyhedron **polyhedron)
 }
 
 struct Polyhedron *
-clone_polyhedron(struct Polyhedron *polyhedron)
+PH_clone_polyhedron(struct Polyhedron *polyhedron)
 {
   struct Polyhedron *clone = malloc(sizeof(struct Polyhedron));
   size_t size = sizeof(struct XYZ) * polyhedron->vertices;
@@ -26,21 +27,21 @@ clone_polyhedron(struct Polyhedron *polyhedron)
 }
 
 struct Polyhedron *
-construct_cube(const double side_length)
+PH_construct_cube(const double side_length)
 {
   float h_len = side_length / 2;
   float h_neg = h_len * -1;
   struct XYZ *vertex = malloc(sizeof(struct XYZ) * 8);
   struct XYZ *v_inc = vertex;
   
-  *v_inc++ = construct_xyz(h_len, h_len, h_neg);
-  *v_inc++ = construct_xyz(h_len, h_neg, h_neg);
-  *v_inc++ = construct_xyz(h_neg, h_neg, h_neg);
-  *v_inc++ = construct_xyz(h_neg, h_len, h_neg);
-  *v_inc++ = construct_xyz(h_len, h_len, h_len);
-  *v_inc++ = construct_xyz(h_len, h_neg, h_len);
-  *v_inc++ = construct_xyz(h_neg, h_neg, h_len);
-  *v_inc++ = construct_xyz(h_neg, h_len, h_len);
+  *v_inc++ = GP_construct_xyz(h_len, h_len, h_neg);
+  *v_inc++ = GP_construct_xyz(h_len, h_neg, h_neg);
+  *v_inc++ = GP_construct_xyz(h_neg, h_neg, h_neg);
+  *v_inc++ = GP_construct_xyz(h_neg, h_len, h_neg);
+  *v_inc++ = GP_construct_xyz(h_len, h_len, h_len);
+  *v_inc++ = GP_construct_xyz(h_len, h_neg, h_len);
+  *v_inc++ = GP_construct_xyz(h_neg, h_neg, h_len);
+  *v_inc++ = GP_construct_xyz(h_neg, h_len, h_len);
 
   struct Polyhedron *polyhedron = malloc(sizeof(struct Polyhedron));
 

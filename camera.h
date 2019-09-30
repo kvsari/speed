@@ -17,6 +17,7 @@
 #include "entity.h"
 #include "world.h"
 #include "geop.h"
+#include "polyhedron.h"
 
 /**
  * Contains state of the camera system.
@@ -36,7 +37,7 @@ struct Camera {
  * constitutes one frame.
  */
 void
-draw_picture(
+CM_draw_picture(
   struct DrawBuffer *draw_buf,
   struct Camera *camera,
   struct Scene *scene,

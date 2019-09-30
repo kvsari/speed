@@ -7,7 +7,7 @@
 #include "video.h"
 
 struct VideoContext
-create_empty_video_context()
+VD_create_empty_video_context()
 {
   struct VideoContext v_context;
 
@@ -22,7 +22,7 @@ create_empty_video_context()
 }
 
 int
-bring_up_video(struct VideoContext *v_context, enum Resolution resolution)
+VD_bring_up_video(struct VideoContext *v_context, enum Resolution resolution)
 {
   int w, h, f;
 
@@ -95,7 +95,7 @@ bring_up_video(struct VideoContext *v_context, enum Resolution resolution)
 }
 
 void
-destroy_video_context(struct VideoContext *v_context)
+VD_destroy_video_context(struct VideoContext *v_context)
 {
   SDL_DestroyTexture(v_context->texture);
   SDL_DestroyRenderer(v_context->renderer);
@@ -103,7 +103,7 @@ destroy_video_context(struct VideoContext *v_context)
 }
 
 void
-display(struct VideoContext *v_context, Uint32 *pixels)
+VD_display(struct VideoContext *v_context, Uint32 *pixels)
 {
   SDL_UpdateTexture(v_context->texture, NULL, pixels, v_context->pitch_bytes);
   SDL_RenderClear(v_context->renderer);

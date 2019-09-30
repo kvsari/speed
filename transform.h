@@ -13,7 +13,7 @@
 #include "polyhedron.h"
 
 void
-transform_scene_models(
+TF_transform_scene_models(
   struct Scene *restrict scene,
   struct Entity *entities,
   struct XYZ *positions,

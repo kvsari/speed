@@ -3,7 +3,7 @@
 #include "world.h"
 
 struct Scene *
-malloc_scene(const uint8_t max_entities)
+WD_malloc_scene(const uint8_t max_entities)
 {
   struct Scene *scene = malloc(sizeof(struct Scene));
   
@@ -14,7 +14,7 @@ malloc_scene(const uint8_t max_entities)
 }
 
 void
-free_scene(struct Scene **scene)
+WD_free_scene(struct Scene **scene)
 {
   free((*scene)->entity_indexes);
   free(*scene);

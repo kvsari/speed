@@ -1,7 +1,7 @@
 #include "camera.h"
 
 void
-draw_picture(
+CM_draw_picture(
   struct DrawBuffer *draw_buf,
   struct Camera *camera,
   struct Scene *scene,

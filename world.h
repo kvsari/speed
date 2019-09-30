@@ -26,9 +26,9 @@ struct Scene {
 };
 
 struct Scene *
-malloc_scene(const uint8_t max_entities);
+WD_malloc_scene(const uint8_t max_entities);
 
 void
-free_scene(struct Scene **scene);
+WD_free_scene(struct Scene **scene);
 
 #endif

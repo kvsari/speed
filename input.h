@@ -44,15 +44,15 @@ struct KeyboardMappings {
 };
 
 struct KeyboardMappings
-default_keyboard_mappings();
+IN_default_keyboard_mappings();
 
 void
-keypress(Uint32 *input_state, const struct KeyboardMappings *k_mappings,
-         const SDL_Scancode scancode);
+IN_keypress(Uint32 *input_state, const struct KeyboardMappings *k_mappings,
+            const SDL_Scancode scancode);
 
 void
-keyrelease(Uint32 *input_state, const struct KeyboardMappings *k_mappings,
-           const SDL_Scancode scancode);
+IN_keyrelease(Uint32 *input_state, const struct KeyboardMappings *k_mappings,
+              const SDL_Scancode scancode);
 
 /**
  * System function: process_input_state
@@ -63,6 +63,6 @@ keyrelease(Uint32 *input_state, const struct KeyboardMappings *k_mappings,
  * TODO: Add the actual player movement struct.
  */
 int
-process_input_state(const Uint32 input_state);
+IN_process_input_state(const Uint32 input_state);
 
 #endif
