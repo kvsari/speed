@@ -22,15 +22,29 @@
 /**
  * Contains state of the camera system.
  *
+ * Camera orientation is handled with three unit vectors. Guassian elimination needs to be
+ * applied to find the rotation matrix.
+ *
  * TODO: Add follow/attach parameters (such as rubber banding).
  */
 struct Camera {
   uint8_t player_entity;
   struct XYZ position;
+  struct XYZ t, s, n;
 };
 
-//void
-//move_camera(struct Camera *camera, struct Entity
+/**
+ * Create a new camera at origin with default starting t, s, n.
+ */
+struct Camera
+CM_create_camera();
+
+/**
+ * Carry out normalization and orthoganalization of the t, s, n vectors of the camera if
+ * falling outside the error margin.
+ */
+void
+CM_mut_correct_tsn(struct Camera *camera, double margin);
 
 /**
  * Draw the provided `Scene` using the `Camera` into the `DrawBuffer`. This draw

@@ -12,6 +12,9 @@
 #ifndef _GEOP_H_
 #define _GEOP_H_
 
+#include <stdlib.h>
+#include <stdbool.h>
+
 /**
  * Data type for holding either a Point or Vector in 3D space. Changing between
  * 3D points and 3D vectors happens often enough. Therefore just keeping them in the
@@ -63,5 +66,31 @@ GP_vs_mul(const struct XYZ *left, const float scalar);
  */
 struct XYZ
 GP_pp_trn(const struct XYZ *from, const struct XYZ *by);
+
+/**
+ * Get the magnitute of a vector.
+ */
+double
+GP_v_mag(const struct XYZ *vector);
+
+/**
+ * Normalize a vector in place.
+ */
+void
+GP_v_mut_normalize(struct XYZ *vector);
+
+/**
+ * Normalize a vector in place if it falls outside the error margin.
+ */
+void
+GP_v_mut_normalize_margin(struct XYZ *vector, double margin);
+
+/**
+ * Mutating translation a stream of positions by displacement. Lenght of stream is denoted.
+ *
+ * NOTE: The stream of XYZ referred to by *pos will be mutated in place.
+ */
+void
+GP_pp_mut_stream_translate(struct XYZ *pos, const struct XYZ *disp, size_t length);
 
 #endif

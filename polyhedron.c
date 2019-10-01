@@ -2,7 +2,6 @@
 #include <string.h>
 
 #include "polyhedron.h"
-#include "geop.h"
 
 void
 PH_free_polyhedron(struct Polyhedron **polyhedron)

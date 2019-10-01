@@ -9,9 +9,6 @@ void
 euler_rotate(double *coefficients, struct XYZ *from, struct XYZ *to, size_t count);
 
 void
-in_place_translate(struct XYZ *position, struct XYZ *vertex, size_t count);
-
-void
 TF_transform_scene_models(
   struct Scene *restrict scene,
   struct Entity *entities,
@@ -40,7 +37,7 @@ TF_transform_scene_models(
     euler_rotate(coefficients, model->vertex, trans->vertex, model->vertices);
 
     // We carry out the translation using the position.
-    in_place_translate(position, trans->vertex, trans->vertices);
+    GP_pp_mut_stream_translate(position, trans->vertex, trans->vertices);
   }
 }
 
@@ -86,19 +83,5 @@ euler_rotate(double *coefficients, struct XYZ *from, struct XYZ *to, size_t coun
     to->z = from->x*coefficients[6] + from->y*coefficients[7] + from->z*coefficients[8];
     to++;
     from++;
-  }
-}
-
-/**
- * Carry out an in-place translation of the vertices.
- */
-void
-in_place_translate(struct XYZ *position, struct XYZ *vertex, size_t count)
-{
-  for(size_t i = 0; i < count; ++i) {
-    vertex->x += position->x;
-    vertex->y += position->y;
-    vertex->z += position->z;
-    vertex++;
   }
 }

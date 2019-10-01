@@ -89,9 +89,7 @@ main(int argc, char **argv)
   if (DR_initialize_draw_buffer(&draw_buf, x, y) != 0) { return 1; }
 
   // Prepare our rendering states
-  struct Camera camera;
-  camera.position.x = 0;
-  camera.position.y = 0;
+  struct Camera camera = CM_create_camera();
   camera.position.z = -100;
   struct Scene *scene = WD_malloc_scene(ASIZE);
 
@@ -203,8 +201,8 @@ main(int argc, char **argv)
     game_on = IN_process_input_state(input_states[0]);
 
     // Update the models on the scene...
-    //transform_scene_models(
-    //  scene, entities, positions, orientations, polyhedrons, transformed, ASIZE);
+    TF_transform_scene_models(
+      scene, entities, positions, orientations, polyhedrons, transformed, ASIZE);
     
     // Draw what the camera sees.
     CM_draw_picture(&draw_buf, &camera, scene, entities, positions, transformed, ASIZE);
