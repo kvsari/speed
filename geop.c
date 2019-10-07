@@ -14,6 +14,46 @@ GP_construct_xyz(const double x, const double y, const double z)
   return new;
 }
 
+struct M33
+GP_m33_from_xyz(const struct XYZ *v1, const struct XYZ *v2, const struct XYZ *v3)
+{
+  struct M33 m33;
+
+  m33.ij[0][0] = v1->x;
+  m33.ij[0][1] = v1->y;
+  m33.ij[0][2] = v1->z;
+
+  m33.ij[1][0] = v2->x;
+  m33.ij[1][1] = v2->y;
+  m33.ij[1][2] = v2->z;
+
+  m33.ij[2][0] = v3->x;
+  m33.ij[2][1] = v3->y;
+  m33.ij[2][2] = v3->z;
+
+  return m33;
+}
+
+struct M33
+GP_m33_identity()
+{
+  struct M33 m33;
+
+  m33.ij[0][0] = 1;
+  m33.ij[0][1] = 0;
+  m33.ij[0][2] = 0;
+
+  m33.ij[1][0] = 0;
+  m33.ij[1][1] = 1;
+  m33.ij[1][2] = 0;
+
+  m33.ij[2][0] = 0;
+  m33.ij[2][1] = 0;
+  m33.ij[2][2] = 1;
+
+  return m33;
+}
+
 struct EulerFix
 GP_construct_euler_fix(const double yaw, const double pitch, const double roll)
 {
@@ -100,6 +140,12 @@ GP_v_mut_normalize_margin(struct XYZ *vector, double margin)
   }
 }
 
+double
+GP_vv_scalar_product(const struct XYZ *restrict v1, const struct XYZ *restrict v2)
+{
+  return v1->x * v2->x + v1->y * v2->y + v1->z * v2->z;
+}
+
 void
 GP_pp_mut_stream_translate(struct XYZ *pos, const struct XYZ *disp, size_t length)
 {
@@ -109,4 +155,27 @@ GP_pp_mut_stream_translate(struct XYZ *pos, const struct XYZ *disp, size_t lengt
     pos->z += disp->z;
     pos++;
   }
+}
+
+struct M33
+GP_vvv_gaussian_stub(
+  const struct XYZ *restrict t,
+  const struct XYZ *restrict s,
+  const struct XYZ *restrict n)
+{
+  struct M33 m33;
+
+  m33.ij[0][0] = t->x;
+  m33.ij[1][0] = t->y;
+  m33.ij[2][0] = t->z;
+
+  m33.ij[0][1] = s->x;
+  m33.ij[1][1] = s->y;
+  m33.ij[2][1] = s->z;
+
+  m33.ij[0][2] = n->x;
+  m33.ij[1][2] = n->y;
+  m33.ij[2][2] = n->z;
+
+  return m33;
 }

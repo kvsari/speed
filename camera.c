@@ -1,4 +1,27 @@
+#include <stdbool.h>
+
 #include "camera.h"
+
+void
+tsn_normalize(struct Camera *camera, double margin)
+{
+  GP_v_mut_normalize_margin(&camera->t, margin);
+  GP_v_mut_normalize_margin(&camera->s, margin);
+  GP_v_mut_normalize_margin(&camera->n, margin);
+}
+
+bool
+tsn_check_orthogonality(struct Camera *camera, double margin)
+{
+  double a = GP_vv_scalar_product(&camera->t, &camera->s);
+  if(a > margin) { return false; }
+  double b = GP_vv_scalar_product(&camera->t, &camera->n);
+  if(b > margin) { return false; }
+  double c = GP_vv_scalar_product(&camera->s, &camera->n);
+  if(c > margin) { return false; }
+
+  return true;
+}
 
 struct Camera
 CM_create_camera()
@@ -23,9 +46,7 @@ CM_create_camera()
 void
 CM_mut_correct_tsn(struct Camera *camera, double margin)
 {
-  GP_v_mut_normalize_margin(&camera->t, margin);
-  GP_v_mut_normalize_margin(&camera->s, margin);
-  GP_v_mut_normalize_margin(&camera->n, margin);
+  tsn_normalize(camera, margin);
 }
 
 void

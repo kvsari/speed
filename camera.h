@@ -23,7 +23,8 @@
  * Contains state of the camera system.
  *
  * Camera orientation is handled with three unit vectors. Guassian elimination needs to be
- * applied to find the rotation matrix.
+ * applied to find the rotation matrix. The `n` vector is the direction the camera is at
+ * with the `t` and `s` vectors being the screen orientations on x and y.
  *
  * TODO: Add follow/attach parameters (such as rubber banding).
  */
