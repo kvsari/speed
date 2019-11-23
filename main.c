@@ -140,13 +140,20 @@ main(int argc, char **argv)
   polyhedrons[0] = PH_construct_cube(1);
 
   // Transformed polyhedrons (applied position and orientations in world space).
-  struct Polyhedron *transformed[ASIZE];
+  struct Polyhedron *world_transformed[ASIZE];
   for(int i = 0; i < ASIZE; ++i) {
-    transformed[i] = NULL;
+    world_transformed[i] = NULL;
   }
   // Prepare our clone for the entity. There must be as many clones (of the right type) for
   // as many entities we have that have models (polyhedrons).
-  transformed[0] = PH_clone_polyhedron(polyhedrons[0]);
+  world_transformed[0] = PH_clone_polyhedron(polyhedrons[0]);
+
+  // Final camera transformed polyhedrons.
+  struct Polyhedron *camera_transformed[ASIZE];
+  for(int i = 0; i < ASIZE; ++i) {
+    camera_transformed[i] = NULL;
+  }
+  camera_transformed[0] = PH_clone_polyhedron(polyhedrons[0]);
   
   // The first input is mapped to the local machine. Second input if we ever get to it
   // will be the remote player. Just future proofing and maintaining symmetry.
@@ -201,11 +208,19 @@ main(int argc, char **argv)
     game_on = IN_process_input_state(input_states[0]);
 
     // Update the models on the scene...
-    TF_transform_scene_models(
-      scene, entities, positions, orientations, polyhedrons, transformed, ASIZE);
+    TF_euler_transform_scene_models(
+      scene, entities, positions, orientations, polyhedrons, world_transformed, ASIZE);
     
     // Draw what the camera sees.
-    CM_draw_picture(&draw_buf, &camera, scene, entities, positions, transformed, ASIZE);
+    CM_draw_picture(
+      &draw_buf,
+      &camera,
+      scene,
+      entities,
+      //positions,
+      world_transformed,
+      camera_transformed,
+      ASIZE);
 
     // Render
     VD_display(&v_context, draw_buf.pixels);

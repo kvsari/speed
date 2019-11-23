@@ -30,10 +30,27 @@ struct XYZ
 GP_construct_xyz(const double x, const double y, const double z);
 
 /**
- * 3x3 matrix definition
+ * Vector or Point in 4D space. This can also be temporarily created when needing to
+ * multiply by a 4x4 matrix.
+ */
+struct XYZW {
+  double x, y, z, w;
+};
+
+struct XYZW
+GP_construct_xyzw(const double x, const double y, const double z, const double w);
+
+struct XYZW
+GP_xyz_into_xyzw(const struct XYZ xyz, const double w);
+
+struct XYZ
+GP_xyzw_truncate(const struct XYZW xyzw);
+
+/**
+ * 3x3 row(r) column(c) matrix definition
  */
 struct M33 {
-  double ij[3][3];
+  double rc[3][3];
 };
 
 /**
@@ -41,13 +58,75 @@ struct M33 {
  * each XYZ vector as a row downwards.
  */
 struct M33
-GP_m33_from_xyz(const struct XYZ *v1, const struct XYZ *v2, const struct XYZ *v3);
+GP_m33_from_xyz_rows(const struct XYZ *v1, const struct XYZ *v2, const struct XYZ *v3);
 
 /**
- * Construct a fresh m33 identity matrix.
+ * Construct a 3x3 matrix from three XYZ vectors. Will construct the matrix by placing
+ * each XYZ vector as a column rightwards.
+ */
+struct M33
+GP_m33_from_xyz_cols(const struct XYZ *v1, const struct XYZ *v2, const struct XYZ *v3);
+
+/**
+ * Construct a fresh M33 identity matrix.
  */
 struct M33
 GP_m33_identity();
+
+/**
+ * Zero the input matrix and transform it into an identity matrix.
+ */
+void
+GP_m33_set_identity(struct M33 *matrix);
+
+/**
+ * 3x3 matrix multiplication. Naive.
+ */
+struct M33
+GP_2m33_mul(const struct M33 *restrict left, const struct M33 *restrict right);
+
+/**
+ * 3x3 matrix multiplication storing into existing memory. Slightly less naive?
+ */
+void
+GP_2m33_mul_into(
+  const struct M33 *restrict left,
+  const struct M33 *restrict right,
+  struct M33 *restrict result);
+
+/**
+ * 4x4 row(r) column(c) matrix definition
+ */
+struct M44 {
+  double rc[4][4];
+};
+
+/**
+ * Construct a fresh M44 identity matrix.
+ */
+struct M44
+GP_m44_identity();
+
+/**
+ * Transform the matrix into an identity matrix.
+ */
+void
+GP_m44_set_identity(struct M44 *matrix);
+
+/**
+ * 4x4 matrix multiplication. Naive.
+ */
+struct M44
+GP_2m44_mul(const struct M44 *restrict left, const struct M44 *restrict right);
+
+/**
+ * 4x4 matrix multiplication storing into existing memory. Slightly less naive?
+ */
+void
+GP_2m44_mul_into(
+  const struct M44 *restrict left,
+  const struct M44 *restrict right,
+  struct M44 *restrict result);
 
 /**
  * Orientation in Euler angles yaw, pitch and roll. Angles are in radians. Beware of
@@ -147,5 +226,11 @@ GP_vvv_gaussian_stub(
   const struct XYZ *restrict t,
   const struct XYZ *restrict s,
   const struct XYZ *restrict n);
+
+/**
+ * Multiply an XYZ vector by an M33 producing an XYZ vector results.
+ */
+struct XYZ
+GP_vm33_mul(const struct XYZ *restrict v, const struct M33 *restrict m);
 
 #endif

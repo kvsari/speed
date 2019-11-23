@@ -57,8 +57,9 @@ CM_draw_picture(
   struct Camera *camera,
   struct Scene *scene,
   struct Entity *entities,
-  struct XYZ *positions,
-  struct Polyhedron **transformed,
+  //struct XYZ *positions,
+  struct Polyhedron **world_transformed,
+  struct Polyhedron **camera_transformed,
   size_t asize);
 
 #endif

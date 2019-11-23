@@ -1,6 +1,7 @@
 #include <stdbool.h>
 
 #include "camera.h"
+#include "geop.h"
 
 void
 tsn_normalize(struct Camera *camera, double margin)
@@ -55,21 +56,35 @@ CM_draw_picture(
   struct Camera *camera,
   struct Scene *scene,
   struct Entity *entities,
-  struct XYZ *positions,
-  struct Polyhedron **transformed,
+  //struct XYZ *positions,
+  struct Polyhedron **world_transformed,
+  struct Polyhedron **camera_transformed,
   size_t asize)
 {
   // Objects have already been transformed to world space.
 
-  // 1. Translate objects to camera space. The camera is to be the center of the 'world'.
+  // 1. Build matrix from n s t params in camera.
+  // 2. Apply Guassian elimination on the matrix.
+  // 3. Solve for the rotation matrix using the Gaussian eliminated matrix.
 
-  // 2. Build matrix from n s t params in camera.
+  // (1, 2, 3) Do all above steps in one easy peasy function call.
+  struct M33 rotation_matrix = GP_vvv_gaussian_stub(&camera->t, &camera->s, &camera->n);
 
-  // 3. Apply Guassian elimination on the matrix.
+  // 4. Loop through all world space transformed polyhedrons
+  for (size_t i = 0; i < asize; ++i) {
+    // 4a. We need to loop through our scene... again. Collapsing the two transform loops
+    //     (the other from TF_transform_scene_models) would be a good optimization. But for
+    //     this game being correct is priority even if it's slow and wasteful.
+    uint8_t e_index = scene->entity_indexes[i];    
+    struct Entity *entity = &entities[e_index];
+    struct Polyhedron *trans = &*world_transformed[entity->transformed];
 
-  // 4. Solve for the rotation matrix using the Gaussian eliminated matrix.
+    // 4b. Translate objects to camera space. The camera is the center of the players world.
+    GP_pp_mut_stream_translate(trans->vertex, &camera->position, trans->vertices);
 
-  // 5. Apply rotation matrix.
+    // 4c. Apply rotation matrix.
+    
+  }
 
   // TODO: More stuff!
 }
