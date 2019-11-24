@@ -23,29 +23,29 @@ struct PlanarPolygon {
 /**
  * A concave polyhedron.
  */
-struct Polyhedron {
-  struct XYZ *vertex;
+typedef struct Polyhedron {
+  C3 *vertex;
   int32_t vertices;
-};
+} Polyhedron;
 
 /**
  * Free memory allocated for the `Polyhedron`.
  */
 void
-PH_free_polyhedron(struct Polyhedron **polyhedron);
+PH_free_polyhedron(Polyhedron **polyhedron);
 
 /**
  * Make a deep copy of an existing `Polyhedron`. Mainly to allocate a same size memory
  * chunk with which to store the translated form of a model.
  */
-struct Polyhedron *
-PH_clone_polyhedron(struct Polyhedron *polyhedron);
+Polyhedron *
+PH_clone_polyhedron(Polyhedron *polyhedron);
 
 /**
  * Return a cube with the center oriented at (0, 0, 0). This function allocates memory
  * for the returned `Polyhedron` struct describing the cube.
  */
-struct Polyhedron *
+Polyhedron *
 PH_construct_cube(const double side_length);
 
 #endif

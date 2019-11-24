@@ -2,73 +2,77 @@
 
 #include "geop.h"
 
-struct XYZ
-GP_construct_xyz(const double x, const double y, const double z)
+C3
+GP_new_C3(const double x, const double y, const double z)
 {
-  struct XYZ new;
-
-  new.x = x;
-  new.y = y;
-  new.z = z;
-
+  C3 new;
+  
+  new.c[0] = x;
+  new.c[1] = y;
+  new.c[2] = z;
+  
   return new;
 }
 
-struct XYZW
-GP_construct_xyzw(const double x, const double y, const double z, const double w) {
-  struct XYZW new;
-
-  new.x = x;
-  new.y = y;
-  new.z = z;
-  new.w = w;
-
-  return new;
-}
-
-struct XYZW
-GP_xyz_into_xyzw(const struct XYZ xyz, const double w) {
-  struct XYZW new;
-
-  new.x = xyz.x;
-  new.y = xyz.y;
-  new.z = xyz.z;
-  new.w = w;
-
-  return new;
-}
-
-struct XYZ
-GP_xyzw_truncate(const struct XYZW xyzw) {
-  struct XYZ new;
-
-  new.x = xyzw.x;
-  new.y = xyzw.y;
-  new.z = xyzw.z;
-
-  return new;
-}
-
-struct M33
-GP_m33_from_xyz_rows(const struct XYZ *v1, const struct XYZ *v2, const struct XYZ *v3)
+C4
+GP_new_C4(const double x, const double y, const double z, const double w)
 {
-  struct M33 m33;
+  C4 new;
 
-  m33.rc[0][0] = v1->x;
-  m33.rc[0][1] = v1->y;
-  m33.rc[0][2] = v1->z;
-
-  m33.rc[1][0] = v2->x;
-  m33.rc[1][1] = v2->y;
-  m33.rc[1][2] = v2->z;
-
-  m33.rc[2][0] = v3->x;
-  m33.rc[2][1] = v3->y;
-  m33.rc[2][2] = v3->z;
-
-  return m33;
+  new.c[0] = x;
+  new.c[1] = y;
+  new.c[2] = z;
+  new.c[3] = w;
+  
+  return new;
 }
 
+C4
+GP_C3_into_C4(const C3 *r, const double w)
+{
+  C4 new;
+
+  new.c[0] = r->c[0];
+  new.c[1] = r->c[1];
+  new.c[2] = r->c[2];
+  new.c[3] = w;
+
+  return new;
+}
+
+C3
+GP_C4_truncate(const C4 *r)
+{
+  C3 new;
+
+  new.c[0] = r->c[0];
+  new.c[1] = r->c[1];
+  new.c[2] = r->c[2];
+
+  return new;
+}
+
+M33
+GP_3x3_matrix_from_rows(const C3 *r1, const C3 *r2, const C3 *r3)
+{
+  M33 matrix;
+
+  matrix.rc[0][0] = r1->c[0];
+  matrix.rc[0][1] = r1->c[1];
+  matrix.rc[0][2] = r1->c[2];
+
+  matrix.rc[1][0] = r2->c[0];
+  matrix.rc[1][1] = r2->c[1];
+  matrix.rc[1][2] = r2->c[2];
+
+  matrix.rc[2][0] = r3->c[0];
+  matrix.rc[2][1] = r3->c[1];
+  matrix.rc[2][2] = r3->c[2];
+
+  return matrix;
+}
+
+/*
 struct M33
 GP_m33_from_xyz_cols(const struct XYZ *v1, const struct XYZ *v2, const struct XYZ *v3)
 {
@@ -88,17 +92,18 @@ GP_m33_from_xyz_cols(const struct XYZ *v1, const struct XYZ *v2, const struct XY
 
   return m33;
 }
+*/
 
-struct M33
-GP_m33_identity()
+M33
+GP_3x3_identity_matrix()
 {
-  struct M33 m33;
-  GP_m33_set_identity(&m33);
-  return m33;
+  M33 matrix;
+  GP_3x3_set_identity(&matrix);
+  return matrix;
 }
 
 void
-GP_m33_set_identity(struct M33 *matrix)
+GP_3x3_set_identity(M33 *matrix)
 {
   matrix->rc[0][0] = 1;
   matrix->rc[0][1] = 0;
@@ -113,40 +118,40 @@ GP_m33_set_identity(struct M33 *matrix)
   matrix->rc[2][2] = 1;
 }
 
-struct M33
-GP_2m33_mul(const struct M33 *restrict m1, const struct M33 *restrict m2)
+M33
+GP_3x3_mul(const M33 *restrict left, const M33 *restrict right)
 {
-  struct M33 result;
-  GP_2m33_mul_into(m1, m2, &result);
+  M33 result;
+  GP_3x3_mul_into(left, right, &result);
   return result;
 }
 
 void
-GP_2m33_mul_into(
-  const struct M33 *restrict m1,
-  const struct M33 *restrict m2,
-  struct M33 *restrict result)
+GP_3x3_mul_into(
+  const M33 *restrict left,
+  const M33 *restrict right,
+  M33 *restrict result)
 {
   for(int i = 0; i < 3; ++i) {
     for (int j = 0; j < 3; ++j) {
-      double k0 = m1->rc[i][0] * m2->rc[0][j];
-      double k1 = m1->rc[i][1] * m2->rc[1][j];
-      double k2 = m1->rc[i][2] * m2->rc[2][j];
+      double k0 = left->rc[i][0] * right->rc[0][j];
+      double k1 = left->rc[i][1] * right->rc[1][j];
+      double k2 = left->rc[i][2] * right->rc[2][j];
       result->rc[i][j] =  k0 + k1 + k2;
     }
   }
 }
 
-struct M44
-GP_m44_identity()
+M44
+GP_4x4_identity()
 {
-  struct M44 m44;
-  GP_m44_set_identity(&m44);
-  return m44;
+  M44 matrix;
+  GP_4x4_set_identity(&matrix);
+  return matrix;
 }
 
 void
-GP_m44_set_identity(struct M44 *matrix)
+GP_4x4_set_identity(M44 *matrix)
 {
   matrix->rc[0][0] = 1;
   matrix->rc[0][1] = 0;
@@ -169,19 +174,19 @@ GP_m44_set_identity(struct M44 *matrix)
   matrix->rc[3][3] = 1;
 }
 
-struct M44
-GP_2m44_mul(const struct M44 *restrict m1, const struct M44 *restrict m2)
+M44
+GP_4x4_mul(const M44 *restrict left, const M44 *restrict right)
 {
-  struct M44 result;
-  GP_2m44_mul_into(m1, m2, &result);
+  M44 result;
+  GP_4x4_mul_into(left, right, &result);
   return result;
 }
 
 void
-GP_2m44_mul_into(
-  const struct M44 *restrict left,
-  const struct M44 *restrict right,
-  struct M44 *restrict result)
+GP_4x4_mul_into(
+  const M44 *restrict left,
+  const M44 *restrict right,
+  M44 *restrict result)
 {
   for(int i = 0; i < 4; ++i) {
     for (int j = 0; j < 4; ++j) {
@@ -194,10 +199,10 @@ GP_2m44_mul_into(
   }
 }
 
-struct EulerFix
+Euler
 GP_construct_euler_fix(const double yaw, const double pitch, const double roll)
 {
-  struct EulerFix new;
+  Euler new;
 
   new.yaw = yaw;
   new.pitch = pitch;
@@ -206,6 +211,7 @@ GP_construct_euler_fix(const double yaw, const double pitch, const double roll)
   return new;
 }
 
+/*
 struct XYZ
 GP_vv_sum(const struct XYZ *left, const struct XYZ *right)
 {
@@ -253,39 +259,44 @@ GP_pp_trn(const struct XYZ *from, const struct XYZ *by)
 
   return result;
 }
+*/
 
 double
-GP_v_mag(const struct XYZ *vector)
+GP_v_mag(const C3 *vector)
 {
-  return sqrt(vector->x * vector->x + vector->y * vector->y + vector->z * vector->z);
+  double x2 = vector->c[X] * vector->c[X];
+  double y2 = vector->c[Y] * vector->c[Y];
+  double z2 = vector->c[Z] * vector->c[Z];
+  return sqrt(x2 + y2 + z2);
 }
 
 void
-GP_v_mut_normalize(struct XYZ *vector)
+GP_v_mut_normalize(C3 *vector)
 {
   double magnitude = GP_v_mag(vector);
-  vector->x = vector->x == 0 ? 0 : vector->x / magnitude;
-  vector->y = vector->y == 0 ? 0 : vector->y / magnitude;
-  vector->z = vector->z == 0 ? 0 : vector->z / magnitude;
+  vector->c[X] = vector->c[X] == 0 ? 0 : vector->c[X] / magnitude;
+  vector->c[Y] = vector->c[Y] == 0 ? 0 : vector->c[Y] / magnitude;
+  vector->c[Z] = vector->c[Z] == 0 ? 0 : vector->c[Z] / magnitude;
 }
 
 void
-GP_v_mut_normalize_margin(struct XYZ *vector, double margin)
+GP_v_mut_normalize_margin(C3 *vector, double margin)
 {
   double magnitude = GP_v_mag(vector);
   if(abs(magnitude - 1.0) > margin) {
-    vector->x = vector->x == 0 ? 0 : vector->x / magnitude;
-    vector->y = vector->y == 0 ? 0 : vector->y / magnitude;
-    vector->z = vector->z == 0 ? 0 : vector->z / magnitude;
+    vector->c[X] = vector->c[X] == 0 ? 0 : vector->c[X] / magnitude;
+    vector->c[Y] = vector->c[Y] == 0 ? 0 : vector->c[Y] / magnitude;
+    vector->c[Z] = vector->c[Z] == 0 ? 0 : vector->c[Z] / magnitude;
   }
 }
 
 double
-GP_vv_scalar_product(const struct XYZ *restrict v1, const struct XYZ *restrict v2)
+GP_vv_scalar_product(const C3 *restrict v1, const C3 *restrict v2)
 {
-  return v1->x * v2->x + v1->y * v2->y + v1->z * v2->z;
+  return v1->c[X] * v2->c[X] + v1->c[Y] * v2->c[Y] + v1->c[Z] * v2->c[Z];
 }
 
+/*
 void
 GP_pp_mut_stream_translate(struct XYZ *pos, const struct XYZ *disp, size_t length)
 {
@@ -296,14 +307,15 @@ GP_pp_mut_stream_translate(struct XYZ *pos, const struct XYZ *disp, size_t lengt
     pos++;
   }
 }
+*/
 
-struct M33
+M33
 GP_vvv_gaussian_stub(
-  const struct XYZ *restrict t,
-  const struct XYZ *restrict s,
-  const struct XYZ *restrict n)
+  const C3 *restrict t,
+  const C3 *restrict s,
+  const C3 *restrict n)
 {
-  return GP_m33_from_xyz_rows(t, s, n);
+  return GP_3x3_matrix_from_rows(t, s, n);
 }
 
 /*

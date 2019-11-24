@@ -16,7 +16,7 @@
  * Compute the 3D euler rotation into the provided matrix.
  */
 void
-TF_set_matrix_rot(struct M33 *matrix, const struct EulerFix *rotation);
+TF_set_matrix_rot(M33 *matrix, const Euler *rotation);
 
 /**
  * Construct a 4x4 transformation matrix by pasting a 3x3 matrix into the upper left ij.
@@ -24,7 +24,7 @@ TF_set_matrix_rot(struct M33 *matrix, const struct EulerFix *rotation);
  * column are never modified and remain [0, 0, 0, 1](and transposed).
  */
 void
-TF_dirty_set_upscale_matrix(struct M44 *restrict mdest, struct M33 *restrict mpaste);
+TF_dirty_set_upscale_matrix(M44 *restrict mdest, M33 *restrict mpaste);
 
 /**
  * As `TF_dirty_upscale_matrix` but makes sure to leave the last column and row as 0's with
@@ -32,7 +32,7 @@ TF_dirty_set_upscale_matrix(struct M44 *restrict mdest, struct M33 *restrict mpa
  * destination matrix never has its last row and column modified from its identity.
  */
 void
-TF_clean_set_upscale_matrix(struct M44 *restrict mdest, struct M33 *restrict mpaste);
+TF_clean_set_upscale_matrix(M44 *restrict mdest, M33 *restrict mpaste);
 
 /**
  * Construct a translation matrix from a position XYZ. The source matrix must be in
@@ -40,32 +40,34 @@ TF_clean_set_upscale_matrix(struct M44 *restrict mdest, struct M33 *restrict mpa
  * results will be had downstream when it's used in matrix operations.
  */
 void
-TF_dirty_set_translation_matrix(struct M44 *mdest, struct XYZ *position);
+TF_dirty_set_translation_matrix(M44 *mdest, C3 *position);
 
 /**
  * As `TF_dirty_set_translation_matrix` but makes sure `mdest` is an identity matrix.
  */
 void
-TF_clean_set_translation_matrix(struct M44 *mdest, struct XYZ *position);
+TF_clean_set_translation_matrix(M44 *mdest, C3 *position);
 
+/*
 void
 TF_euler_transform_scene_models(
   struct Scene *restrict scene,
   struct Entity *entities,
-  struct XYZ *positions,
-  struct EulerFix *orientations,
-  struct Polyhedron **polyhedrons,
-  struct Polyhedron **world_transformed,
+  C3 *positions,
+  Euler *orientations,
+  Polyhedron **polyhedrons,
+  Polyhedron **world_transformed,
   size_t asize);
+*/
 
 void
 TF_matrix_transform_scene_models(
   struct Scene *restrict scene,
   struct Entity *entities,
-  struct XYZ *positions,
-  struct EulerFix *orientations,
-  struct Polyhedron **polyhedrons,
-  struct Polyhedron **world_transformed,
+  C3 *positions,
+  Euler *orientations,
+  Polyhedron **polyhedrons,
+  Polyhedron **world_transformed,
   size_t asize);
   
 #endif

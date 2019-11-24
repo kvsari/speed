@@ -2,21 +2,24 @@
 
 #include "transform.h"
 
+/*
 void
 set_euler_rotation_coefficients(double *coefficients, struct EulerFix *rotation);
 
 void
-euler_rotate(double *coefficients, struct XYZ *from, struct XYZ *to, size_t count);
+euler_rotate(double *coefficients, C3 *from, C3 *to, size_t count);
+*/
 
 void
-set_yaw_rot_matrix(struct M33 *matrix, double yaw);
+set_yaw_rot_matrix(M33 *matrix, double yaw);
 
 void
-set_pitch_rot_matrix(struct M33 *matrix, double pitch);
+set_pitch_rot_matrix(M33 *matrix, double pitch);
 
 void
-set_roll_rot_matrix(struct M33 *matrix, double roll);
+set_roll_rot_matrix(M33 *matrix, double roll);
 
+/*
 void
 TF_euler_transform_scene_models(
   struct Scene *restrict scene,
@@ -49,34 +52,35 @@ TF_euler_transform_scene_models(
     GP_pp_mut_stream_translate(trans->vertex, position, trans->vertices);
   }
 }
+*/
 
 void
 TF_matrix_transform_scene_models(
   struct Scene *restrict scene,
   struct Entity *entities,
-  struct XYZ *positions,
-  struct EulerFix *orientations,
-  struct Polyhedron **polyhedrons,
-  struct Polyhedron **world_transformed,
+  C3 *positions,
+  Euler *orientations,
+  Polyhedron **polyhedrons,
+  Polyhedron **world_transformed,
   size_t asize)
 {
-  struct M33 rotation_matrix_3x3;
-  struct M44 rotation_matrix_4x4 = GP_m44_identity();
-  struct M44 translation_matrix = GP_m44_identity();
-  struct M44 transform_matrix;
+  M33 rotation_matrix_3x3;
+  M44 rotation_matrix_4x4 = GP_4x4_identity();
+  M44 translation_matrix = GP_4x4_identity();
+  M44 transform_matrix;
   
   for(uint8_t i = 0; i < scene->entity_count; ++i) {
     uint8_t e_index = scene->entity_indexes[i];    
     struct Entity *entity = &entities[e_index];
-    struct XYZ *position = &positions[entity->position];
-    struct EulerFix *orientation = &orientations[entity->orientation];
-    struct Polyhedron *model = &*polyhedrons[entity->model];
-    struct Polyhedron *trans = &*world_transformed[entity->transformed];
+    C3 *position = &positions[entity->position];
+    Euler *orientation = &orientations[entity->orientation];
+    Polyhedron *model = &*polyhedrons[entity->model];
+    Polyhedron *trans = &*world_transformed[entity->transformed];
 
     TF_set_matrix_rot(&rotation_matrix_3x3, orientation);
     TF_clean_set_upscale_matrix(&rotation_matrix_4x4, &rotation_matrix_3x3);
     TF_clean_set_translation_matrix(&translation_matrix, position);
-    GP_2m44_mul_into(&rotation_matrix_4x4, &translation_matrix, &transform_matrix);
+    GP_4x4_mul_into(&rotation_matrix_4x4, &translation_matrix, &transform_matrix);
   }
 }
 
@@ -87,6 +91,7 @@ TF_matrix_transform_scene_models(
  *
  * Coefficients are in order from 0 to 8; mx1, my1, mz1, mx2, my2, mz2, mx3, my3, mz3.
  */
+/*
 void
 set_euler_rotation_coefficients(double *coefficients, struct EulerFix *rotation)
 {
@@ -109,10 +114,12 @@ set_euler_rotation_coefficients(double *coefficients, struct EulerFix *rotation)
   coefficients[7] = sinp;
   coefficients[8] = cosy * cosp;
 }
+*/
 
 /**
  * Rotate a stream of XYZ vertices using the pre-computed euler coefficients.
  */
+/*
 void
 euler_rotate(double *coefficients, struct XYZ *from, struct XYZ *to, size_t count)
 {
@@ -124,9 +131,10 @@ euler_rotate(double *coefficients, struct XYZ *from, struct XYZ *to, size_t coun
     from++;
   }
 }
+*/
 
 void
-set_yaw_rot_matrix(struct M33 *matrix, double yaw)
+set_yaw_rot_matrix(M33 *matrix, double yaw)
 { 
   double cosy = cos(yaw);
   double siny = sin(yaw);
@@ -145,7 +153,7 @@ set_yaw_rot_matrix(struct M33 *matrix, double yaw)
 }
 
 void
-set_pitch_rot_matrix(struct M33 *matrix, double pitch)
+set_pitch_rot_matrix(M33 *matrix, double pitch)
 { 
   double cosp = cos(pitch);
   double sinp = sin(pitch);
@@ -164,7 +172,7 @@ set_pitch_rot_matrix(struct M33 *matrix, double pitch)
 }
 
 void
-set_roll_rot_matrix(struct M33 *matrix, double roll)
+set_roll_rot_matrix(M33 *matrix, double roll)
 {
   double cosr = cos(roll);
   double sinr = sin(roll);
@@ -183,19 +191,19 @@ set_roll_rot_matrix(struct M33 *matrix, double roll)
 }
 
 void
-TF_set_matrix_rot(struct M33 *matrix, const struct EulerFix *rotation)
+TF_set_matrix_rot(M33 *matrix, const Euler *rotation)
 {
-  struct M33 y_matrix, p_matrix, r_matrix, yp_matrix;
+  M33 y_matrix, p_matrix, r_matrix, yp_matrix;
   set_yaw_rot_matrix(&y_matrix, rotation->yaw);
   set_pitch_rot_matrix(&p_matrix, rotation->pitch);
   set_roll_rot_matrix(&r_matrix, rotation->roll);
 
-  GP_2m33_mul_into(&y_matrix, &p_matrix, &yp_matrix);
-  GP_2m33_mul_into(&yp_matrix, &r_matrix, matrix);
+  GP_3x3_mul_into(&y_matrix, &p_matrix, &yp_matrix);
+  GP_3x3_mul_into(&yp_matrix, &r_matrix, matrix);
 }
 
 void
-TF_dirty_set_upscale_matrix(struct M44 *restrict mdest, struct M33 *restrict mpaste)
+TF_dirty_set_upscale_matrix(M44 *restrict mdest, M33 *restrict mpaste)
 {
   mdest->rc[0][0] = mpaste->rc[0][0];
   mdest->rc[0][1] = mpaste->rc[0][1];
@@ -211,7 +219,7 @@ TF_dirty_set_upscale_matrix(struct M44 *restrict mdest, struct M33 *restrict mpa
 }
 
 void
-TF_clean_set_upscale_matrix(struct M44 *restrict mdest, struct M33 *restrict mpaste)
+TF_clean_set_upscale_matrix(M44 *restrict mdest, M33 *restrict mpaste)
 {
   mdest->rc[0][0] = mpaste->rc[0][0];
   mdest->rc[0][1] = mpaste->rc[0][1];
@@ -235,16 +243,16 @@ TF_clean_set_upscale_matrix(struct M44 *restrict mdest, struct M33 *restrict mpa
 }
 
 void
-TF_dirty_set_translation_matrix(struct M44 *mdest, struct XYZ *position)
+TF_dirty_set_translation_matrix(M44 *mdest, C3 *position)
 {
-  mdest->rc[3][0] = position->x;
-  mdest->rc[3][1] = position->y;
-  mdest->rc[3][2] = position->z;
+  mdest->rc[3][0] = position->c[X];
+  mdest->rc[3][1] = position->c[Y];
+  mdest->rc[3][2] = position->c[Z];
 }
 
 void
-TF_clean_set_translation_matrix(struct M44 *mdest, struct XYZ *position)
+TF_clean_set_translation_matrix(M44 *mdest, C3 *position)
 {
-  GP_m44_set_identity(mdest);
+  GP_4x4_set_identity(mdest);
   TF_dirty_set_translation_matrix(mdest, position);
 }

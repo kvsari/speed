@@ -28,24 +28,24 @@
  *
  * TODO: Add follow/attach parameters (such as rubber banding).
  */
-struct Camera {
+typedef struct WorldToScreen {
   uint8_t player_entity;
-  struct XYZ position;
-  struct XYZ t, s, n;
-};
+  C3 position;
+  C3 t, s, n;
+} Camera;
 
 /**
  * Create a new camera at origin with default starting t, s, n.
  */
-struct Camera
-CM_create_camera();
+Camera
+CM_default_camera();
 
 /**
  * Carry out normalization and orthoganalization of the t, s, n vectors of the camera if
  * falling outside the error margin.
  */
 void
-CM_mut_correct_tsn(struct Camera *camera, double margin);
+CM_mut_correct_tsn(Camera *camera, double margin);
 
 /**
  * Draw the provided `Scene` using the `Camera` into the `DrawBuffer`. This draw
@@ -54,12 +54,12 @@ CM_mut_correct_tsn(struct Camera *camera, double margin);
 void
 CM_draw_picture(
   struct DrawBuffer *draw_buf,
-  struct Camera *camera,
+  Camera *camera,
   struct Scene *scene,
   struct Entity *entities,
   //struct XYZ *positions,
-  struct Polyhedron **world_transformed,
-  struct Polyhedron **camera_transformed,
+  Polyhedron **world_transformed,
+  Polyhedron **camera_transformed,
   size_t asize);
 
 #endif

@@ -89,8 +89,8 @@ main(int argc, char **argv)
   if (DR_initialize_draw_buffer(&draw_buf, x, y) != 0) { return 1; }
 
   // Prepare our rendering states
-  struct Camera camera = CM_create_camera();
-  camera.position.z = -100;
+  Camera camera = CM_default_camera();
+  camera.position.c[Z] = -100;
   struct Scene *scene = WD_malloc_scene(ASIZE);
 
   /*
@@ -120,19 +120,19 @@ main(int argc, char **argv)
   ////////////////////////////////////////////
 
   // Positions in world space
-  struct XYZ positions[ASIZE];
-  positions[0].x = 0;
-  positions[0].y = 0;
-  positions[0].z = 0;
+  C3 positions[ASIZE];
+  positions[0].c[X] = 0;
+  positions[0].c[Y] = 0;
+  positions[0].c[Z] = 0;
 
   // Euler orientations in world space
-  struct EulerFix orientations[ASIZE];
+  Euler orientations[ASIZE];
   orientations[0].yaw   = 0.0;
   orientations[0].pitch = 0.0;
   orientations[0].roll  = 0.0;
 
   // Use flyweight pattern to re-use the same polyhedrons. We'd better NULL for safety.
-  struct Polyhedron *polyhedrons[ASIZE];
+  Polyhedron *polyhedrons[ASIZE];
   for(int i = 0; i < ASIZE; ++i) {
     polyhedrons[i] = NULL;
   }
@@ -140,7 +140,7 @@ main(int argc, char **argv)
   polyhedrons[0] = PH_construct_cube(1);
 
   // Transformed polyhedrons (applied position and orientations in world space).
-  struct Polyhedron *world_transformed[ASIZE];
+  Polyhedron *world_transformed[ASIZE];
   for(int i = 0; i < ASIZE; ++i) {
     world_transformed[i] = NULL;
   }
@@ -149,7 +149,7 @@ main(int argc, char **argv)
   world_transformed[0] = PH_clone_polyhedron(polyhedrons[0]);
 
   // Final camera transformed polyhedrons.
-  struct Polyhedron *camera_transformed[ASIZE];
+  Polyhedron *camera_transformed[ASIZE];
   for(int i = 0; i < ASIZE; ++i) {
     camera_transformed[i] = NULL;
   }
@@ -208,7 +208,7 @@ main(int argc, char **argv)
     game_on = IN_process_input_state(input_states[0]);
 
     // Update the models on the scene...
-    TF_euler_transform_scene_models(
+    TF_matrix_transform_scene_models(
       scene, entities, positions, orientations, polyhedrons, world_transformed, ASIZE);
     
     // Draw what the camera sees.
